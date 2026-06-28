@@ -1,0 +1,2195 @@
+<!DOCTYPE html>
+<!-- saved from url=(0050)file:///C:/Users/diego/Downloads/HODL_Vault_4.html -->
+<html lang="nl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="HODL Vault">
+<meta name="theme-color" content="#0d1512">
+<title>HODL Vault — Bitvavo</title>
+
+<!-- PWA icon: dark vault with gold coin + rocket, 180×180 -->
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns=&#39;http://www.w3.org/2000/svg&#39; viewBox=&#39;0 0 180 180&#39;%3E%3Crect width=&#39;180&#39; height=&#39;180&#39; rx=&#39;38&#39; fill=&#39;%230d1512&#39;/%3E%3Ccircle cx=&#39;90&#39; cy=&#39;88&#39; r=&#39;52&#39; fill=&#39;%231c2924&#39; stroke=&#39;%23e0b25a&#39; stroke-width=&#39;4&#39;/%3E%3Ccircle cx=&#39;90&#39; cy=&#39;88&#39; r=&#39;38&#39; fill=&#39;%2315201b&#39; stroke=&#39;%23e0b25a&#39; stroke-width=&#39;2.5&#39;/%3E%3Ctext x=&#39;90&#39; y=&#39;100&#39; font-size=&#39;38&#39; text-anchor=&#39;middle&#39; fill=&#39;%23e0b25a&#39; font-family=&#39;Arial&#39;%3E%F0%9F%92%B0%3C/text%3E%3Ccircle cx=&#39;134&#39; cy=&#39;46&#39; r=&#39;16&#39; fill=&#39;%23e0b25a&#39;/%3E%3Ctext x=&#39;134&#39; y=&#39;52&#39; font-size=&#39;16&#39; text-anchor=&#39;middle&#39; fill=&#39;%230d1512&#39; font-family=&#39;Arial&#39; font-weight=&#39;bold&#39;%3E%E2%86%91%3C/text%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=&#39;http://www.w3.org/2000/svg&#39; viewBox=&#39;0 0 32 32&#39;%3E%3Crect width=&#39;32&#39; height=&#39;32&#39; rx=&#39;7&#39; fill=&#39;%230d1512&#39;/%3E%3Ccircle cx=&#39;16&#39; cy=&#39;16&#39; r=&#39;10&#39; fill=&#39;none&#39; stroke=&#39;%23e0b25a&#39; stroke-width=&#39;2&#39;/%3E%3Ctext x=&#39;16&#39; y=&#39;21&#39; font-size=&#39;10&#39; text-anchor=&#39;middle&#39; fill=&#39;%23e0b25a&#39; font-family=&#39;Arial&#39;%3E%24%3C/text%3E%3C/svg%3E">
+
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+<link href="./index_files/css2" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0d1512; --surface:#15201b; --surface-2:#1c2924; --border:rgba(255,255,255,0.08);
+    --text:#ededE6; --muted:#8fa39a; --accent:#e0b25a; --profit:#6fbf8e; --loss:#e2796e;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; padding:1.5rem;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  .vault{max-width:760px; margin:0 auto;}
+
+  .vault-header{display:flex; justify-content:space-between; align-items:flex-start; gap:1rem; flex-wrap:wrap; margin-bottom:1.25rem;}
+  .brand-eyebrow{font-family:'JetBrains Mono',monospace; font-size:0.7rem; letter-spacing:0.18em; color:var(--accent); display:block; margin-bottom:0.35rem;}
+  .vault-header h1{font-family:'Space Grotesk',sans-serif; font-size:1.6rem; margin:0; font-weight:700; letter-spacing:-0.01em;}
+  .refresh-btn{display:flex; align-items:center; gap:0.5rem; background:var(--surface-2); border:1px solid var(--border); color:var(--text); font-family:'Inter',sans-serif; font-size:0.85rem; font-weight:500; padding:0.5rem 0.9rem; border-radius:999px; cursor:pointer; transition:border-color .15s, color .15s;}
+  .refresh-btn:hover{border-color:var(--accent); color:var(--accent);}
+  .refresh-btn:disabled{opacity:0.5; cursor:not-allowed;}
+  .refresh-btn.spin svg{animation:spin 1s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .updated-at{display:block; text-align:right; font-size:0.7rem; color:var(--muted); margin-top:0.35rem; font-family:'JetBrains Mono',monospace;}
+
+  .ticker-wrap{overflow:hidden; border-top:1px solid var(--border); border-bottom:1px solid var(--border); background:var(--surface-2); padding:0.6rem 0; margin-bottom:1.25rem; border-radius:8px; display:none;}
+  .ticker-track{display:flex; gap:2.5rem; white-space:nowrap; animation:ticker 32s linear infinite; width:max-content;}
+  .ticker-wrap:hover .ticker-track{animation-play-state:paused;}
+  @keyframes ticker{from{transform:translateX(0);} to{transform:translateX(-50%);}}
+  .ticker-item{font-family:'JetBrains Mono',monospace; font-size:0.8rem; display:flex; align-items:center; gap:0.5rem;}
+  .ticker-item .sym{color:var(--accent); font-weight:600;}
+
+  .notice{background:var(--surface-2); border:1px solid var(--border); border-radius:10px; padding:0.85rem 1rem; font-size:0.85rem; color:var(--muted); line-height:1.5; margin-bottom:1.25rem; display:none;}
+  .notice.show{display:block;}
+  .notice strong{color:var(--accent);}
+
+  .summary-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:0.75rem; margin-bottom:0.6rem;}
+  .stat{background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:0.85rem 1rem; display:flex; gap:0.7rem; align-items:flex-start;}
+  .stat-icon{color:var(--accent); margin-top:0.15rem; flex-shrink:0;}
+  .stat-body{display:flex; flex-direction:column; gap:0.2rem; min-width:0;}
+  .stat-label{font-size:0.72rem; color:var(--muted);}
+  .stat-value{font-family:'JetBrains Mono',monospace; font-size:1.05rem; font-weight:600; color:var(--text);}
+  .stat-sub{font-family:'JetBrains Mono',monospace; font-size:0.75rem;}
+  .profit{color:var(--profit);} .loss{color:var(--loss);}
+
+  .partial-note{font-size:0.78rem; color:var(--accent); background:var(--surface-2); border:1px solid var(--border); border-radius:10px; padding:0.7rem 1rem; margin-bottom:1.25rem; display:none; line-height:1.5;}
+  .partial-note.show{display:block;}
+
+  /* collapsible panels */
+  .panel{background:var(--surface); border:1px solid var(--border); border-radius:12px; margin-bottom:0.85rem; overflow:hidden;}
+  .panel-toggle{width:100%; background:none; border:none; color:var(--text); padding:0.85rem 1rem; display:flex; align-items:center; justify-content:space-between; cursor:pointer; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:0.9rem;}
+  .panel-body{display:none; border-top:1px solid var(--border); padding:1rem; background:var(--surface-2);}
+  .panel-body.open{display:block;}
+  .panel-hint{font-size:0.8rem; color:var(--muted); line-height:1.5; margin:0 0 0.75rem;}
+  .empty-msg{font-size:0.8rem; color:var(--muted); line-height:1.6; margin:0;}
+
+  /* hero */
+  .hero{background:linear-gradient(155deg, var(--surface) 0%, var(--surface-2) 100%); border:1px solid var(--border); border-radius:16px; padding:1.1rem 1.25rem; margin-bottom:1.1rem; display:flex; flex-wrap:wrap; gap:1rem; align-items:center; justify-content:space-between;}
+  .hero-main{display:flex; flex-direction:column; gap:0.25rem; min-width:170px;}
+  .hero-label{font-size:0.72rem; color:var(--muted); letter-spacing:0.04em;}
+  .hero-value{font-family:'Space Grotesk',sans-serif; font-size:2.1rem; font-weight:700; letter-spacing:-0.01em; line-height:1.1;}
+  .hero-sub{font-family:'JetBrains Mono',monospace; font-size:0.78rem;}
+  .hero-spark{flex-shrink:0;}
+  .hero-spark svg{display:block;}
+  .hero-movers{display:flex; gap:0.6rem; flex-wrap:wrap;}
+  .hero-mover{background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:0.5rem 0.75rem; display:flex; flex-direction:column; gap:0.15rem; min-width:96px;}
+  .hero-mover-label{font-size:0.64rem; color:var(--muted);}
+  .hero-mover-val{font-family:'JetBrains Mono',monospace; font-size:0.88rem; font-weight:600;}
+  .hero-mover.up .hero-mover-val{color:var(--profit);}
+  .hero-mover.down .hero-mover-val{color:var(--loss);}
+  .hero-empty{font-size:0.82rem; color:var(--muted);}
+
+  /* opportunity ranking */
+  .opportunity-list{display:flex; flex-direction:column; gap:0.5rem; margin-top:0.85rem;}
+  .opportunity-row{display:flex; align-items:center; gap:0.75rem; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:0.6rem 0.85rem;}
+  .opp-rank{font-family:'JetBrains Mono',monospace; color:var(--muted); font-size:0.78rem; width:1.2rem; flex-shrink:0; text-align:center;}
+  .opp-id{display:flex; flex-direction:column; min-width:58px; flex-shrink:0;}
+  .opp-id .symbol{font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:0.88rem;}
+  .opp-id .name{font-size:0.64rem; color:var(--muted);}
+  .opp-detail{flex:1; display:flex; flex-direction:column; gap:0.1rem; min-width:0;}
+  .opp-pct{font-family:'JetBrains Mono',monospace; font-size:0.88rem; font-weight:600;}
+  .opp-meta{font-size:0.68rem; color:var(--muted);}
+  .opp-tag{font-size:0.66rem; padding:0.22rem 0.6rem; border-radius:999px; font-weight:600; flex-shrink:0; white-space:nowrap;}
+  .opp-tag.deep{background:rgba(224,178,90,0.22); color:var(--accent);}
+  .opp-tag.strong{background:rgba(224,178,90,0.13); color:var(--accent);}
+  .opp-tag.light{background:rgba(143,163,154,0.16); color:var(--muted);}
+  .opp-tag.above{background:rgba(111,191,142,0.15); color:var(--profit);}
+
+  /* rebalance */
+  .rebalance-table{display:flex; flex-direction:column; gap:0.45rem; margin-top:0.85rem;}
+  .rebalance-row{display:grid; grid-template-columns:60px 78px 64px 1fr; gap:0.5rem; align-items:center; font-size:0.8rem; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:0.5rem 0.7rem;}
+  .rebalance-row .rb-symbol{font-family:'Space Grotesk',sans-serif; font-weight:700;}
+  .rb-target-wrap{display:flex; align-items:center; background:var(--surface-2); border:1px solid var(--border); border-radius:6px; padding:0.2rem 0.45rem; gap:0.2rem;}
+  .rb-target-wrap input{background:none; border:none; outline:none; color:var(--text); font-family:'JetBrains Mono',monospace; font-size:0.8rem; width:100%; text-align:right;}
+  .rb-target-wrap input::-webkit-outer-spin-button,
+  .rb-target-wrap input::-webkit-inner-spin-button{-webkit-appearance:none; margin:0;}
+  .rb-target-wrap input[type=number]{-moz-appearance:textfield;}
+  .rb-target-wrap span{color:var(--muted); font-size:0.75rem;}
+  .rb-current{font-family:'JetBrains Mono',monospace; color:var(--muted); font-size:0.78rem; text-align:right;}
+  .rb-action{font-size:0.76rem; text-align:right;}
+  .rb-action.buy{color:var(--profit); font-weight:600;}
+  .rb-action.over{color:var(--accent);}
+  .rb-action.balanced{color:var(--muted);}
+  .rebalance-sum{font-size:0.74rem; color:var(--muted); margin-top:0.7rem; line-height:1.5;}
+  .rebalance-sum.warn{color:var(--accent);}
+
+  /* sort row */
+  .sort-row{display:flex; align-items:center; gap:0.6rem; margin-bottom:0.6rem; font-size:0.8rem; color:var(--muted); flex-wrap:wrap;}
+  .sort-row select{background:var(--surface); border:1px solid var(--border); color:var(--text); font-family:'Inter',sans-serif; font-size:0.8rem; padding:0.4rem 0.6rem; border-radius:8px; outline:none;}
+
+  .holdings{display:flex; flex-direction:column; gap:0.6rem;}
+  .holding{background:var(--surface); border:1px solid var(--border); border-radius:12px; overflow:hidden;}
+  .holding-head{width:100%; background:none; border:none; color:var(--text); padding:0.85rem 1rem; display:flex; align-items:center; gap:1rem; cursor:pointer; text-align:left; font-family:inherit;}
+  .holding-id{display:flex; flex-direction:column; min-width:64px; flex-shrink:0;}
+  .symbol{font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:0.95rem;}
+  .name{font-size:0.7rem; color:var(--muted);}
+
+  .holding-figures{flex:1; display:grid; grid-template-columns:repeat(5,1fr); gap:0.5rem; min-width:0;}
+  .figure{display:flex; flex-direction:column; gap:0.15rem; min-width:0;}
+  .figure-label{font-size:0.65rem; color:var(--muted); white-space:nowrap;}
+  .figure-value{font-size:0.85rem; font-weight:500; display:flex; flex-direction:column;}
+  .figure-sub{font-family:'JetBrains Mono',monospace; font-size:0.7rem; opacity:0.85;}
+  .change{font-size:0.7rem; margin-top:0.1rem;}
+
+  .live-dot{display:inline-block; width:6px; height:6px; border-radius:50%; margin-left:5px; background:var(--muted); vertical-align:middle;}
+  .live-dot.ws{background:var(--profit); animation:pulse 1.6s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{opacity:1;} 50%{opacity:0.35;}}
+  .flash-up{animation:flashUp 0.7s ease;}
+  .flash-down{animation:flashDown 0.7s ease;}
+  @keyframes flashUp{0%{background-color:rgba(111,191,142,0.28); border-radius:4px;} 100%{background-color:transparent;}}
+  @keyframes flashDown{0%{background-color:rgba(226,121,110,0.28); border-radius:4px;} 100%{background-color:transparent;}}
+  .ws-status{display:block; text-align:right; font-size:0.68rem; color:var(--muted); margin-top:0.2rem; font-family:'JetBrains Mono',monospace;}
+
+  .price-manual{display:none;}
+  body.live-off .price-live{display:none;}
+  body.live-off .price-manual{display:flex;}
+
+  .manual-wrap{display:flex; align-items:center; background:var(--surface-2); border:1px solid var(--border); border-radius:6px; padding:0.1rem 0.4rem; max-width:90px;}
+  .manual-prefix{font-size:0.75rem; color:var(--muted); margin-right:0.2rem;}
+  .manual-input{background:none; border:none; color:var(--accent); font-family:'JetBrains Mono',monospace; font-size:0.8rem; width:100%; outline:none;}
+
+  .chevron{color:var(--muted); transition:transform .2s ease; flex-shrink:0;}
+  .chevron.open{transform:rotate(180deg); color:var(--accent);}
+
+  .sim{display:none; border-top:1px solid var(--border); padding:1rem; background:var(--surface-2);}
+  .sim.open{display:block;}
+  .sim-title{font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:0.85rem; margin-bottom:0.75rem; color:var(--accent);}
+
+  .mode-toggle{display:flex; gap:0.4rem; margin-bottom:0.75rem;}
+  .mode-btn{flex:1; background:var(--surface); border:1px solid var(--border); color:var(--muted); padding:0.45rem; border-radius:8px; font-size:0.75rem; cursor:pointer; font-family:'Inter',sans-serif; font-weight:500; transition:all .15s;}
+  .mode-btn.active{background:var(--accent); color:#1a2118; border-color:var(--accent); font-weight:600;}
+
+  .slider-row{display:flex; align-items:center; gap:0.7rem; margin-bottom:0.6rem;}
+  .slider-row input[type=range]{flex:1; accent-color:var(--accent); height:4px;}
+  .slider-amount{display:flex; align-items:center; background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:0.35rem 0.5rem; gap:0.3rem; min-width:96px;}
+  .slider-amount span{color:var(--muted); font-size:0.8rem;}
+  .slider-amount input{background:none; border:none; outline:none; color:var(--text); font-family:'JetBrains Mono',monospace; font-size:0.85rem; width:100%; text-align:right;}
+
+  .sim-price-row{display:flex; align-items:center; gap:0.5rem; margin-bottom:0.75rem; font-size:0.72rem; color:var(--muted);}
+  .input-prefix{display:flex; align-items:center; background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:0.35rem 0.6rem; gap:0.35rem; flex:1;}
+  .input-prefix span{color:var(--muted); font-size:0.85rem;}
+  .input-prefix input{background:none; border:none; outline:none; color:var(--text); font-family:'JetBrains Mono',monospace; font-size:0.85rem; width:100%;}
+
+  .sim-result{display:flex; flex-direction:column; gap:0.4rem; border-top:1px dashed var(--border); padding-top:0.6rem;}
+  .sim-result.hidden{display:none;}
+  .sim-row{display:flex; justify-content:space-between; font-size:0.8rem; color:var(--muted);}
+  .sim-row.highlight{color:var(--text); font-weight:600; padding-top:0.3rem; border-top:1px solid var(--border);}
+  .sim-hint{font-size:0.78rem; color:var(--muted);}
+  .sim-hint.hidden{display:none;}
+
+  /* coin info */
+  .coin-info{display:none; border-top:1px solid var(--border); padding:0.85rem 1rem; background:var(--surface-2); font-size:0.82rem; color:var(--muted); line-height:1.6;}
+  .coin-info.open{display:block;}
+  .coin-info p{margin:0;}
+
+  /* allocation donut */
+  .alloc-wrap{display:flex; gap:1.25rem; align-items:center; flex-wrap:wrap;}
+  .alloc-chart{flex-shrink:0;}
+  .alloc-legend{display:flex; flex-direction:column; gap:0.45rem; font-size:0.8rem; flex:1; min-width:160px;}
+  .alloc-item{display:flex; align-items:center; gap:0.5rem; justify-content:space-between;}
+  .alloc-item .alloc-name{display:flex; align-items:center; gap:0.45rem; color:var(--text);}
+  .alloc-item .swatch{width:10px; height:10px; border-radius:3px; display:inline-block; flex-shrink:0;}
+  .alloc-item .alloc-pct{font-family:'JetBrains Mono',monospace; color:var(--muted); font-size:0.74rem; white-space:nowrap;}
+
+  @media (max-width:600px){
+    .holding-head{flex-wrap:wrap;}
+    .holding-figures{grid-template-columns:repeat(2,1fr); order:3; width:100%;}
+    .chevron{order:2; margin-left:auto;}
+    .hero{flex-direction:column; align-items:stretch;}
+    .hero-spark{align-self:stretch;}
+    .hero-spark svg{width:100%;}
+    .rebalance-row{grid-template-columns:46px 78px 54px 1fr; font-size:0.74rem; padding:0.45rem 0.55rem;}
+    .bubble-field{height:400px;}
+  }
+
+  /* crypto bubbles */
+  .bubble-modes{display:flex; gap:0.4rem; margin-bottom:0.85rem; flex-wrap:wrap;}
+  .bubble-field{position:relative; width:100%; height:480px; border:1px solid var(--border); border-radius:16px; background:radial-gradient(circle at 50% 38%, rgba(224,178,90,0.05), rgba(0,0,0,0.22) 78%); overflow:hidden;}
+  .bubble{position:absolute; top:0; left:0; border-radius:50%; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:0.05rem; will-change:transform; user-select:none; cursor:default; overflow:hidden;}
+  .bubble .b-sym{font-family:'Space Grotesk',sans-serif; font-weight:700; line-height:1; letter-spacing:0.01em; text-shadow:0 1px 3px rgba(0,0,0,0.5);}
+  .bubble .b-chg{font-family:'JetBrains Mono',monospace; font-weight:600; line-height:1; text-shadow:0 1px 3px rgba(0,0,0,0.45);}
+  .bubble .b-sub{font-family:'JetBrains Mono',monospace; opacity:0.92; line-height:1; text-shadow:0 1px 2px rgba(0,0,0,0.45);}
+  .bubble-empty{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:0.85rem; text-align:center; padding:1rem;}
+  /* ---- lock screen ---- */
+  #lockScreen{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.8rem;padding:2rem;}
+  #lockScreen.hidden{display:none;}
+  .lock-icon{font-size:4.5rem;line-height:1;animation:bob 3s ease-in-out infinite;}
+  @keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+  .lock-title{font-family:'Space Grotesk',sans-serif;font-size:1.6rem;font-weight:700;color:var(--text);letter-spacing:-0.01em;text-align:center;}
+  .lock-sub{font-size:0.82rem;color:var(--muted);text-align:center;margin-top:-1rem;}
+  .pin-dots{display:flex;gap:0.9rem;justify-content:center;}
+  .pin-dot{width:14px;height:14px;border-radius:50%;border:2px solid var(--muted);transition:background .15s,border-color .15s;}
+  .pin-dot.filled{background:var(--accent);border-color:var(--accent);}
+  .pin-dot.error{background:var(--loss);border-color:var(--loss);}
+  .pin-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:0.7rem;width:240px;}
+  .pin-btn{background:var(--surface);border:1px solid var(--border);border-radius:50%;width:68px;height:68px;font-family:'Space Grotesk',sans-serif;font-size:1.4rem;font-weight:700;color:var(--text);cursor:pointer;transition:background .12s,border-color .12s;display:flex;align-items:center;justify-content:center;}
+  .pin-btn:hover{background:var(--surface-2);border-color:var(--accent);}
+  .pin-btn:active{background:var(--accent);color:#1a2118;}
+  .pin-btn.del{font-size:1rem;color:var(--muted);}
+  .lock-shake{animation:shake .4s ease;}
+  @keyframes shake{0%,100%{transform:translateX(0);}20%{transform:translateX(-10px);}40%{transform:translateX(10px);}60%{transform:translateX(-8px);}80%{transform:translateX(6px);}}
+</style>
+</head>
+<body>
+
+<!-- ====== LOCK SCREEN ====== -->
+<div id="lockScreen">
+  <div class="lock-icon">💰</div>
+  <div>
+    <div class="lock-title">HODL Vault</div>
+    <div class="lock-sub">Voer je pincode in om verder te gaan</div>
+  </div>
+  <div class="pin-dots" id="pinDots">
+    <div class="pin-dot" id="d0"></div>
+    <div class="pin-dot" id="d1"></div>
+    <div class="pin-dot" id="d2"></div>
+  </div>
+  <div class="pin-pad" id="pinPad">
+    <button class="pin-btn" data-n="1">1</button>
+    <button class="pin-btn" data-n="2">2</button>
+    <button class="pin-btn" data-n="3">3</button>
+    <button class="pin-btn" data-n="4">4</button>
+    <button class="pin-btn" data-n="5">5</button>
+    <button class="pin-btn" data-n="6">6</button>
+    <button class="pin-btn" data-n="7">7</button>
+    <button class="pin-btn" data-n="8">8</button>
+    <button class="pin-btn" data-n="9">9</button>
+    <button class="pin-btn del" data-n="del">⌫</button>
+    <button class="pin-btn" data-n="0">0</button>
+    <button class="pin-btn del" data-n="ok" style="font-size:0.85rem;color:var(--accent);">OK</button>
+  </div>
+</div>
+<!-- ====== END LOCK SCREEN ====== -->
+
+<div id="vaultApp" style="display:none;">
+<div class="vault">
+
+  <header class="vault-header">
+    <div>
+      <span class="brand-eyebrow">BITVAVO · SPOT · EUR</span>
+      <h1>HODL Vault</h1>
+    </div>
+    <div>
+      <button class="refresh-btn" id="refreshBtn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36L21 8"></path><path d="M21 3v5h-5"></path></svg>
+        <span id="refreshLabel">Live prijzen</span>
+      </button>
+      <span class="updated-at" id="updatedAt">bijgewerkt 23:59:35</span>
+      <span class="ws-status" id="wsStatus">Bitvavo realtime: 11/11 coins live</span>
+    </div>
+  </header>
+
+  <div class="ticker-wrap" id="tickerWrap" style="display: block;">
+    <div class="ticker-track" id="tickerTrack"><span class="ticker-item"><span class="sym">ETH</span><span class="mono" data-ticker-price="ethereum-0">€&nbsp;1.370,05</span><span data-ticker-change="ethereum-0" class="loss">-0,82%</span></span><span class="ticker-item"><span class="sym">SOL</span><span class="mono" data-ticker-price="solana-1">€&nbsp;61,73</span><span data-ticker-change="solana-1" class="loss">-0,77%</span></span><span class="ticker-item"><span class="sym">APT</span><span class="mono" data-ticker-price="aptos-2">€&nbsp;0,5018</span><span data-ticker-change="aptos-2" class="loss">-1,66%</span></span><span class="ticker-item"><span class="sym">HNT</span><span class="mono" data-ticker-price="helium-3">€&nbsp;0,2274</span><span data-ticker-change="helium-3" class="loss">-4,38%</span></span><span class="ticker-item"><span class="sym">AAVE</span><span class="mono" data-ticker-price="aave-4">€&nbsp;78,92</span><span data-ticker-change="aave-4" class="loss">-3,65%</span></span><span class="ticker-item"><span class="sym">LINK</span><span class="mono" data-ticker-price="chainlink-5">€&nbsp;6,30</span><span data-ticker-change="chainlink-5" class="loss">-1,67%</span></span><span class="ticker-item"><span class="sym">SUI</span><span class="mono" data-ticker-price="sui-6">€&nbsp;0,5932</span><span data-ticker-change="sui-6" class="loss">-1,08%</span></span><span class="ticker-item"><span class="sym">TAO</span><span class="mono" data-ticker-price="bittensor-7">€&nbsp;177,98</span><span data-ticker-change="bittensor-7" class="loss">-2,98%</span></span><span class="ticker-item"><span class="sym">XRP</span><span class="mono" data-ticker-price="ripple-8">€&nbsp;0,9121</span><span data-ticker-change="ripple-8" class="loss">-1,19%</span></span><span class="ticker-item"><span class="sym">HBAR</span><span class="mono" data-ticker-price="hedera-hashgraph-9">€&nbsp;0,0619</span><span data-ticker-change="hedera-hashgraph-9" class="loss">-1,83%</span></span><span class="ticker-item"><span class="sym">AVAX</span><span class="mono" data-ticker-price="avalanche-2-10">€&nbsp;5,53</span><span data-ticker-change="avalanche-2-10" class="loss">-1,31%</span></span><span class="ticker-item"><span class="sym">ETH</span><span class="mono" data-ticker-price="ethereum-11">€&nbsp;1.370,05</span><span data-ticker-change="ethereum-11" class="loss">-0,82%</span></span><span class="ticker-item"><span class="sym">SOL</span><span class="mono" data-ticker-price="solana-12">€&nbsp;61,73</span><span data-ticker-change="solana-12" class="loss">-0,77%</span></span><span class="ticker-item"><span class="sym">APT</span><span class="mono" data-ticker-price="aptos-13">€&nbsp;0,5018</span><span data-ticker-change="aptos-13" class="loss">-1,66%</span></span><span class="ticker-item"><span class="sym">HNT</span><span class="mono" data-ticker-price="helium-14">€&nbsp;0,2274</span><span data-ticker-change="helium-14" class="loss">-4,38%</span></span><span class="ticker-item"><span class="sym">AAVE</span><span class="mono" data-ticker-price="aave-15">€&nbsp;78,92</span><span data-ticker-change="aave-15" class="loss">-3,65%</span></span><span class="ticker-item"><span class="sym">LINK</span><span class="mono" data-ticker-price="chainlink-16">€&nbsp;6,30</span><span data-ticker-change="chainlink-16" class="loss">-1,67%</span></span><span class="ticker-item"><span class="sym">SUI</span><span class="mono" data-ticker-price="sui-17">€&nbsp;0,5932</span><span data-ticker-change="sui-17" class="loss">-1,08%</span></span><span class="ticker-item"><span class="sym">TAO</span><span class="mono" data-ticker-price="bittensor-18">€&nbsp;177,98</span><span data-ticker-change="bittensor-18" class="loss">-2,98%</span></span><span class="ticker-item"><span class="sym">XRP</span><span class="mono" data-ticker-price="ripple-19">€&nbsp;0,9121</span><span data-ticker-change="ripple-19" class="loss">-1,19%</span></span><span class="ticker-item"><span class="sym">HBAR</span><span class="mono" data-ticker-price="hedera-hashgraph-20">€&nbsp;0,0619</span><span data-ticker-change="hedera-hashgraph-20" class="loss">-1,83%</span></span><span class="ticker-item"><span class="sym">AVAX</span><span class="mono" data-ticker-price="avalanche-2-21">€&nbsp;5,53</span><span data-ticker-change="avalanche-2-21" class="loss">-1,31%</span></span></div>
+  </div>
+
+  <div class="notice" id="notice"></div>
+
+  <div class="hero" id="hero">
+    <div class="hero-main">
+      <span class="hero-label">Totale portefeuillewaarde</span>
+      <span class="hero-value" id="heroValue">€&nbsp;4.527,98</span>
+      <span class="hero-sub" id="heroSub"><span class="profit">+€&nbsp;4,74 (+0,10%)</span> deze sessie</span>
+    </div>
+    <div class="hero-spark" id="heroSparkWrap"><svg viewBox="0 0 160 56" width="160" height="56">
+    <path d="M4.0,52.0 L80.0,4.0 L156.0,4.0 L156.0,52 L4.0,52 Z" fill="rgba(111,191,142,0.14)" stroke="none"></path>
+    <path d="M4.0,52.0 L80.0,4.0 L156.0,4.0" fill="none" stroke="var(--profit)" stroke-width="2"></path>
+  </svg></div>
+    <div class="hero-movers" id="heroMovers">
+      <div class="hero-mover up"><span class="hero-mover-label">Stijger 24u</span><span class="hero-mover-val">SOL -0,78%</span></div>
+      <div class="hero-mover down"><span class="hero-mover-label">Daler 24u</span><span class="hero-mover-val">HNT -4,92%</span></div>
+    </div>
+  </div>
+
+  <p style="font-size:0.72rem;color:var(--muted);margin:-0.4rem 0 1rem; line-height:1.5;">
+    <span class="live-dot ws"></span> live prijzen &amp; 24u via Bitvavo &nbsp;·&nbsp;
+    <span class="live-dot"></span> CoinGecko alleen als reserve
+  </p>
+
+  <div class="summary-grid">
+    <div class="stat">
+      <div class="stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"></path></svg></div>
+      <div class="stat-body"><span class="stat-label">Totale inzet (gestort)</span><span class="stat-value" id="statDeposited">€&nbsp;8.300,00</span></div>
+    </div>
+    <div class="stat">
+      <div class="stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"></circle><path d="M18.09 10.37A6 6 0 1 1 10.34 18"></path><path d="M7 6h1v4"></path></svg></div>
+      <div class="stat-body"><span class="stat-label">Inzet huidige coins</span><span class="stat-value" id="statInvested">€&nbsp;8.115,85</span></div>
+    </div>
+    <div class="stat">
+      <div class="stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="22" x2="21" y2="22"></line><line x1="6" y1="18" x2="6" y2="11"></line><line x1="10" y1="18" x2="10" y2="7"></line><line x1="14" y1="18" x2="14" y2="3"></line><line x1="18" y1="18" x2="18" y2="9"></line></svg></div>
+      <div class="stat-body"><span class="stat-label">Totale waarde (incl. cash)</span><span class="stat-value" id="statValue">€&nbsp;4.527,98</span><span class="stat-sub" id="statValueSub">waarvan €&nbsp;25,02 cash</span></div>
+    </div>
+    <div class="stat">
+      <div class="stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg></div>
+      <div class="stat-body"><span class="stat-label">Resultaat (vs. gestort)</span><span class="stat-value loss" id="statPL">€&nbsp;-3.772,02</span><span class="stat-sub loss" id="statPLPct">-45,45%</span></div>
+    </div>
+  </div>
+
+  <div class="partial-note" id="partialNote">* 11 van 11 coins (ETH, SOL, APT, HNT, AAVE, LINK, SUI, TAO, XRP, HBAR, AVAX) hebben nog geen prijs. "Totale waarde" en "resultaat" zijn berekend zonder deze coins — vul hun prijs handmatig in voor het volledige beeld.</div>
+
+  <div class="panel" id="bubblePanel">
+    <button class="panel-toggle" id="bubbleToggle">
+      <span>Crypto bubbles</span>
+      <svg class="chevron open" id="bubbleChevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </button>
+    <div class="panel-body open" id="bubbleBody">
+      <p class="panel-hint">Elke bubbel is een coin. In <strong>Aandeel</strong>-modus is de grootte je aandeel in de portefeuille (groter = groter deel van je wallet); in <strong>24u-beweging</strong>-modus is de grootte de sterkte van de koersbeweging (grootste stijgers én dalers worden het grootst). De kleur toont de 24-uurs richting — <span style="color:var(--profit)">groen omhoog</span>, <span style="color:var(--loss)">rood omlaag</span> — en wordt feller naarmate de beweging groter is. Live via Bitvavo.</p>
+      <div class="bubble-modes">
+        <button class="mode-btn active" data-bubble-mode="share">Aandeel van wallet</button>
+        <button class="mode-btn" data-bubble-mode="move">24u-beweging</button>
+      </div>
+      <div class="bubble-field" id="bubbleField"><div class="bubble" title="SOL · Solana
+Koers € 61,77
+24u -0,78%
+Waarde € 1.606,07 (35,7% van portefeuille)" style="background: radial-gradient(circle at 32% 26%, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0.06) 14%, rgba(242, 84, 78, 0.37) 42%, rgba(242, 84, 78, 0.06) 100%); box-shadow: rgba(0, 0, 0, 0.34) 0px 6px 20px, rgba(242, 84, 78, 0.14) 0px 0px 12px, rgba(255, 255, 255, 0.22) 0px 3px 12px inset; border: 1px solid rgba(242, 84, 78, 0.33); color: rgb(255, 241, 240);"><span class="b-sym" style="font-size:22.0px">SOL</span><span class="b-chg" style="font-size:17.0px">35,7%</span><span class="b-sub" style="font-size:12.0px">-0,78%</span></div><div class="bubble" title="ETH · Ethereum
+Koers € 1.370,97
+24u -0,79%
+Waarde € 1.453,23 (32,3% van portefeuille)" style="background: radial-gradient(circle at 32% 26%, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0.06) 14%, rgba(242, 84, 78, 0.37) 42%, rgba(242, 84, 78, 0.06) 100%); box-shadow: rgba(0, 0, 0, 0.34) 0px 6px 20px, rgba(242, 84, 78, 0.14) 0px 0px 12px, rgba(255, 255, 255, 0.22) 0px 3px 12px inset; border: 1px solid rgba(242, 84, 78, 0.33); color: rgb(255, 241, 240);"><span class="b-sym" style="font-size:22.0px">ETH</span><span class="b-chg" style="font-size:17.0px">32,3%</span><span class="b-sub" style="font-size:12.0px">-0,79%</span></div><div class="bubble" title="SUI · Sui
+Koers € 0,5931
+24u -1,16%
+Waarde € 617,66 (13,7% van portefeuille)" style="background: radial-gradient(circle at 32% 26%, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0.06) 14%, rgba(242, 84, 78, 0.38) 42%, rgba(242, 84, 78, 0.06) 100%); box-shadow: rgba(0, 0, 0, 0.34) 0px 6px 20px, rgba(242, 84, 78, 0.15) 0px 0px 13px, rgba(255, 255, 255, 0.22) 0px 3px 12px inset; border: 1px solid rgba(242, 84, 78, 0.34); color: rgb(255, 241, 240);"><span class="b-sym" style="font-size:22.0px">SUI</span><span class="b-chg" style="font-size:17.0px">13,7%</span><span class="b-sub" style="font-size:12.0px">-1,16%</span></div><div class="bubble" title="LINK · Chainlink
+Koers € 6,31
+24u -1,62%
+Waarde € 389,18 (8,6% van portefeuille)" style="background: radial-gradient(circle at 32% 26%, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0.06) 14%, rgba(242, 84, 78, 0.39) 42%, rgba(242, 84, 78, 0.06) 100%); box-shadow: rgba(0, 0, 0, 0.34) 0px 6px 20px, rgba(242, 84, 78, 0.17) 0px 0px 14px, rgba(255, 255, 255, 0.22) 0px 3px 12px inset; border: 1px solid rgba(242, 84, 78, 0.36); color: rgb(255, 241, 240);"><span class="b-sym" style="font-size:22.0px">LINK</span><span class="b-chg" style="font-size:17.0px">8,6%</span><span class="b-sub" style="font-size:12.0px">-1,62%</span></div><div class="bubble" title="AAVE · Aave
+Koers € 79,90
+24u -2,45%
+Waarde € 161,40 (3,6% van portefeuille)" style="background: radial-gradient(circle at 32% 26%, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0.06) 14%, rgba(242, 84, 78, 0.42) 42%, rgba(242, 84, 78, 0.07) 100%); box-shadow: rgba(0, 0, 0, 0.34) 0px 6px 20px, rgba(242, 84, 78, 0.19) 0px 0px 15px, rgba(255, 255, 255, 0.22) 0px 3px 12px inset; border: 1px solid rgba(242, 84, 78, 0.39); color: rgb(255, 241, 240);"><span class="b-sym" style="font-size:18.2px">AAVE</span><span class="b-chg" style="font-size:13.6px">3,6%</span><span class="b-sub" style="font-size:9.1px">-2,45%</span></div><div class="bubble" title="APT · Aptos
+Koers € 0,5019
+24u -1,78%
+Waarde € 98,77 (2,2% van portefeuille)" style="background: radial-gradient(circle at 32% 26%, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0.06) 14%, rgba(242, 84, 78, 0.4) 42%, rgba(242, 84, 78, 0.06) 100%); box-shadow: rgba(0, 0, 0, 0.34) 0px 6px 20px, rgba(242, 84, 78, 0.17) 0px 0px 14px, rgba(255, 255, 255, 0.22) 0px 3px 12px inset; border: 1px solid rgba(242, 84, 78, 0.36); color: rgb(255, 241, 240);"><span class="b-sym" style="font-size:14.3px">APT</span><span class="b-chg" style="font-size:10.7px">2,2%</span></div><div class="bubble" title="AVAX · Avalanche
+Koers € 5,54
+24u -1,07%
+Waarde € 97,37 (2,2% van portefeuille)" style="background: radial-gradient(circle at 32% 26%, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0.06) 14%, rgba(242, 84, 78, 0.38) 42%, rgba(242, 84, 78, 0.06) 100%); box-shadow: rgba(0, 0, 0, 0.34) 0px 6px 20px, rgba(242, 84, 78, 0.15) 0px 0px 12px, rgba(255, 255, 255, 0.22) 0px 3px 12px inset; border: 1px solid rgba(242, 84, 78, 0.34); color: rgb(255, 241, 240);"><span class="b-sym" style="font-size:14.2px">AVAX</span><span class="b-chg" style="font-size:10.6px">2,2%</span></div><div class="bubble" title="XRP · XRP
+Koers € 0,9128
+24u -1,04%
+Waarde € 24,06 (0,5% van portefeuille)" style="background: radial-gradient(circle at 32% 26%, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0.06) 14%, rgba(242, 84, 78, 0.37) 42%, rgba(242, 84, 78, 0.06) 100%); box-shadow: rgba(0, 0, 0, 0.34) 0px 6px 20px, rgba(242, 84, 78, 0.15) 0px 0px 12px, rgba(255, 255, 255, 0.22) 0px 3px 12px inset; border: 1px solid rgba(242, 84, 78, 0.34); color: rgb(255, 241, 240);"><span class="b-sym" style="font-size:12.5px">XRP</span><span class="b-chg" style="font-size:9.4px">0,5%</span></div><div class="bubble" title="HBAR · Hedera
+Koers € 0,0619
+24u -1,78%
+Waarde € 22,92 (0,5% van portefeuille)" style="background: radial-gradient(circle at 32% 26%, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0.06) 14%, rgba(242, 84, 78, 0.4) 42%, rgba(242, 84, 78, 0.06) 100%); box-shadow: rgba(0, 0, 0, 0.34) 0px 6px 20px, rgba(242, 84, 78, 0.17) 0px 0px 14px, rgba(255, 255, 255, 0.22) 0px 3px 12px inset; border: 1px solid rgba(242, 84, 78, 0.36); color: rgb(255, 241, 240);"><span class="b-sym" style="font-size:12.5px">HBAR</span><span class="b-chg" style="font-size:9.4px">0,5%</span></div><div class="bubble" title="TAO · Bittensor
+Koers € 178,04
+24u -3,09%
+Waarde € 22,79 (0,5% van portefeuille)" style="background: radial-gradient(circle at 32% 26%, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0.06) 14%, rgba(242, 84, 78, 0.44) 42%, rgba(242, 84, 78, 0.08) 100%); box-shadow: rgba(0, 0, 0, 0.34) 0px 6px 20px, rgba(242, 84, 78, 0.21) 0px 0px 17px, rgba(255, 255, 255, 0.22) 0px 3px 12px inset; border: 1px solid rgba(242, 84, 78, 0.41); color: rgb(255, 241, 240);"><span class="b-sym" style="font-size:12.5px">TAO</span><span class="b-chg" style="font-size:9.4px">0,5%</span></div><div class="bubble" title="HNT · Helium
+Koers € 0,2269
+24u -4,92%
+Waarde € 9,51 (0,2% van portefeuille)" style="background: radial-gradient(circle at 32% 26%, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0.06) 14%, rgba(242, 84, 78, 0.5) 42%, rgba(242, 84, 78, 0.09) 100%); box-shadow: rgba(0, 0, 0, 0.34) 0px 6px 20px, rgba(242, 84, 78, 0.26) 0px 0px 21px, rgba(255, 255, 255, 0.22) 0px 3px 12px inset; border: 1px solid rgba(242, 84, 78, 0.47); color: rgb(255, 241, 240);"><span class="b-sym" style="font-size:12.5px">HNT</span><span class="b-chg" style="font-size:9.4px">0,2%</span></div></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <button class="panel-toggle" id="allocToggle">
+      <span>Portefeuilleverdeling</span>
+      <svg class="chevron" id="allocChevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </button>
+    <div class="panel-body" id="allocBody">
+      <p class="panel-hint">Hoe je huidige totale waarde (holdings + cash) verdeeld is over je coins, op basis van de laatst bekende prijzen.</p>
+      <div class="alloc-wrap" id="allocWrap"><svg class="alloc-chart" width="140" height="140" viewBox="0 0 140 140"><circle cx="70" cy="70" r="60" fill="none" stroke="#e0b25a" stroke-width="20" stroke-dasharray="120.99 256.00" stroke-dashoffset="0.00" transform="rotate(-90 70 70)"></circle><circle cx="70" cy="70" r="60" fill="none" stroke="#6fbf8e" stroke-width="20" stroke-dasharray="133.72 243.27" stroke-dashoffset="-120.99" transform="rotate(-90 70 70)"></circle><circle cx="70" cy="70" r="60" fill="none" stroke="#7aa2f7" stroke-width="20" stroke-dasharray="8.22 368.77" stroke-dashoffset="-254.71" transform="rotate(-90 70 70)"></circle><circle cx="70" cy="70" r="60" fill="none" stroke="#e2796e" stroke-width="20" stroke-dasharray="0.79 376.20" stroke-dashoffset="-262.94" transform="rotate(-90 70 70)"></circle><circle cx="70" cy="70" r="60" fill="none" stroke="#c792ea" stroke-width="20" stroke-dasharray="13.44 363.55" stroke-dashoffset="-263.73" transform="rotate(-90 70 70)"></circle><circle cx="70" cy="70" r="60" fill="none" stroke="#73d0ff" stroke-width="20" stroke-dasharray="32.40 344.59" stroke-dashoffset="-277.17" transform="rotate(-90 70 70)"></circle><circle cx="70" cy="70" r="60" fill="none" stroke="#f6c177" stroke-width="20" stroke-dasharray="51.43 325.57" stroke-dashoffset="-309.57" transform="rotate(-90 70 70)"></circle><circle cx="70" cy="70" r="60" fill="none" stroke="#9ece6a" stroke-width="20" stroke-dasharray="1.90 375.09" stroke-dashoffset="-360.99" transform="rotate(-90 70 70)"></circle><circle cx="70" cy="70" r="60" fill="none" stroke="#e0b25a" stroke-width="20" stroke-dasharray="2.00 374.99" stroke-dashoffset="-362.89" transform="rotate(-90 70 70)"></circle><circle cx="70" cy="70" r="60" fill="none" stroke="#6fbf8e" stroke-width="20" stroke-dasharray="1.91 375.08" stroke-dashoffset="-364.89" transform="rotate(-90 70 70)"></circle><circle cx="70" cy="70" r="60" fill="none" stroke="#7aa2f7" stroke-width="20" stroke-dasharray="8.11 368.88" stroke-dashoffset="-366.80" transform="rotate(-90 70 70)"></circle><circle cx="70" cy="70" r="60" fill="none" stroke="#e2796e" stroke-width="20" stroke-dasharray="2.08 374.91" stroke-dashoffset="-374.91" transform="rotate(-90 70 70)"></circle></svg><div class="alloc-legend"><div class="alloc-item"><span class="alloc-name"><span class="swatch" style="background:#e0b25a"></span>ETH</span><span class="alloc-pct">32,1% · €&nbsp;1.453,23</span></div><div class="alloc-item"><span class="alloc-name"><span class="swatch" style="background:#6fbf8e"></span>SOL</span><span class="alloc-pct">35,5% · €&nbsp;1.606,07</span></div><div class="alloc-item"><span class="alloc-name"><span class="swatch" style="background:#7aa2f7"></span>APT</span><span class="alloc-pct">2,2% · €&nbsp;98,77</span></div><div class="alloc-item"><span class="alloc-name"><span class="swatch" style="background:#e2796e"></span>HNT</span><span class="alloc-pct">0,2% · €&nbsp;9,51</span></div><div class="alloc-item"><span class="alloc-name"><span class="swatch" style="background:#c792ea"></span>AAVE</span><span class="alloc-pct">3,6% · €&nbsp;161,40</span></div><div class="alloc-item"><span class="alloc-name"><span class="swatch" style="background:#73d0ff"></span>LINK</span><span class="alloc-pct">8,6% · €&nbsp;389,18</span></div><div class="alloc-item"><span class="alloc-name"><span class="swatch" style="background:#f6c177"></span>SUI</span><span class="alloc-pct">13,6% · €&nbsp;617,66</span></div><div class="alloc-item"><span class="alloc-name"><span class="swatch" style="background:#9ece6a"></span>TAO</span><span class="alloc-pct">0,5% · €&nbsp;22,79</span></div><div class="alloc-item"><span class="alloc-name"><span class="swatch" style="background:#e0b25a"></span>XRP</span><span class="alloc-pct">0,5% · €&nbsp;24,06</span></div><div class="alloc-item"><span class="alloc-name"><span class="swatch" style="background:#6fbf8e"></span>HBAR</span><span class="alloc-pct">0,5% · €&nbsp;22,92</span></div><div class="alloc-item"><span class="alloc-name"><span class="swatch" style="background:#7aa2f7"></span>AVAX</span><span class="alloc-pct">2,2% · €&nbsp;97,37</span></div><div class="alloc-item"><span class="alloc-name"><span class="swatch" style="background:#e2796e"></span>Cash (EUR)</span><span class="alloc-pct">0,6% · €&nbsp;25,02</span></div></div></div>
+    </div>
+  </div>
+
+  <div class="sort-row">
+    <label for="sortSelect">Sorteer op:</label>
+    <select id="sortSelect">
+      <option value="value-desc">Waarde (hoog → laag)</option>
+      <option value="value-asc">Waarde (laag → hoog)</option>
+      <option value="change-desc">24u verandering (hoog → laag)</option>
+      <option value="change-asc">24u verandering (laag → hoog)</option>
+      <option value="pl-desc">Resultaat (winst → verlies)</option>
+      <option value="pl-asc">Resultaat (verlies → winst)</option>
+    </select>
+  </div>
+
+  <div class="holdings" id="holdings"><div class="holding">
+    <button class="holding-head" data-toggle="solana">
+      <div class="holding-id">
+        <span class="symbol">SOL</span>
+        <span class="name">Solana</span>
+      </div>
+      <div class="holding-figures">
+        <div class="figure">
+          <span class="figure-label">Aantal</span>
+          <span class="figure-value mono">26</span>
+        </div>
+        <div class="figure">
+          <span class="figure-label">Gem. instap</span>
+          <span class="figure-value mono">€&nbsp;99,53</span>
+        </div>
+        <div class="figure">
+          <span class="figure-label">Huidige prijs</span>
+          <span class="figure-value mono price-live flash-up" data-live-price="solana">€&nbsp;61,77<span class="change loss">-0,78%</span><span class="live-dot ws" title="Realtime via Bitvavo"></span></span>
+          <span class="figure-value price-manual">
+            <span class="manual-wrap">
+              <span class="manual-prefix">€</span>
+              <input class="manual-input" type="number" step="any" min="0" placeholder="invullen" data-manual="solana">
+            </span>
+          </span>
+        </div>
+        <div class="figure">
+          <span class="figure-label">Waarde</span>
+          <span class="figure-value mono flash-up" data-value="solana">€&nbsp;1.606,07</span>
+        </div>
+        <div class="figure">
+          <span class="figure-label">Resultaat</span>
+          <span class="figure-value mono loss" data-pl="solana">€&nbsp;-998,14<small class="figure-sub">-38,33%</small></span>
+        </div>
+      </div>
+      <svg class="chevron" data-chevron="solana" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </button>
+    <div class="sim" data-sim="solana">
+      <div class="sim-title">Bijkopen simuleren</div>
+
+      <div class="mode-toggle">
+        <button class="mode-btn active" data-mode-btn="euro" data-coin="solana">In euro's</button>
+        <button class="mode-btn" data-mode-btn="coins" data-coin="solana">In aantal coins</button>
+      </div>
+
+      <div class="slider-row">
+        <input type="range" data-slider="solana" min="0" max="3950" step="40" value="0">
+        <div class="slider-amount">
+          <span data-unit-prefix="solana">€</span>
+          <input type="number" min="0" step="any" data-amount="solana" value="0">
+          <span data-unit-suffix="solana"></span>
+        </div>
+      </div>
+
+      <div class="sim-price-row">
+        <span>Tegen prijs</span>
+        <div class="input-prefix">
+          <span>€</span>
+          <input type="number" min="0" step="any" placeholder="61,772" data-buy-price="solana">
+        </div>
+      </div>
+
+      <div class="sim-result hidden" data-sim-result="solana">
+        <div class="sim-row"><span>Coins erbij</span><span class="mono" data-sim-coins="solana"></span></div>
+        <div class="sim-row"><span>Bijkoopbedrag</span><span class="mono" data-sim-euros="solana"></span></div>
+        <div class="sim-row"><span>Nieuw totaal</span><span class="mono" data-sim-total="solana"></span></div>
+        <div class="sim-row"><span>Nieuwe inzet</span><span class="mono" data-sim-invested="solana"></span></div>
+        <div class="sim-row highlight"><span>Nieuwe gem. instap</span><span class="mono" data-sim-avg="solana"></span></div>
+      </div>
+      <div class="sim-hint" data-sim-hint="solana">Schuif of vul een bedrag in om het effect op je gemiddelde instapprijs te zien.</div>
+    </div>
+    <div class="coin-info" data-info="solana">
+      <p>Een zeer snelle en goedkope blockchain, populair voor handel, apps en meme-coins. Wint terrein dankzij lage transactiekosten, maar heeft in het verleden ook netwerkstoringen gehad.</p>
+    </div>
+  </div><div class="holding">
+    <button class="holding-head" data-toggle="ethereum">
+      <div class="holding-id">
+        <span class="symbol">ETH</span>
+        <span class="name">Ethereum</span>
+      </div>
+      <div class="holding-figures">
+        <div class="figure">
+          <span class="figure-label">Aantal</span>
+          <span class="figure-value mono">1,06</span>
+        </div>
+        <div class="figure">
+          <span class="figure-label">Gem. instap</span>
+          <span class="figure-value mono">€&nbsp;2.426,80</span>
+        </div>
+        <div class="figure">
+          <span class="figure-label">Huidige prijs</span>
+          <span class="figure-value mono price-live flash-up" data-live-price="ethereum">€&nbsp;1.370,97<span class="change loss">-0,79%</span><span class="live-dot ws" title="Realtime via Bitvavo"></span></span>
+          <span class="figure-value price-manual">
+            <span class="manual-wrap">
+              <span class="manual-prefix">€</span>
+              <input class="manual-input" type="number" step="any" min="0" placeholder="invullen" data-manual="ethereum">
+            </span>
+          </span>
+        </div>
+        <div class="figure">
+          <span class="figure-label">Waarde</span>
+          <span class="figure-value mono flash-up" data-value="ethereum">€&nbsp;1.453,23</span>
+        </div>
+        <div class="figure">
+          <span class="figure-label">Resultaat</span>
+          <span class="figure-value mono loss" data-pl="ethereum">€&nbsp;-1.123,91<small class="figure-sub">-43,61%</small></span>
+        </div>
+      </div>
+      <svg class="chevron" data-chevron="ethereum" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </button>
+    <div class="sim" data-sim="ethereum">
+      <div class="sim-title">Bijkopen simuleren</div>
+
+      <div class="mode-toggle">
+        <button class="mode-btn active" data-mode-btn="euro" data-coin="ethereum">In euro's</button>
+        <button class="mode-btn" data-mode-btn="coins" data-coin="ethereum">In aantal coins</button>
+      </div>
+
+      <div class="slider-row">
+        <input type="range" data-slider="ethereum" min="0" max="3900" step="40" value="0">
+        <div class="slider-amount">
+          <span data-unit-prefix="ethereum">€</span>
+          <input type="number" min="0" step="any" data-amount="ethereum" value="0">
+          <span data-unit-suffix="ethereum"></span>
+        </div>
+      </div>
+
+      <div class="sim-price-row">
+        <span>Tegen prijs</span>
+        <div class="input-prefix">
+          <span>€</span>
+          <input type="number" min="0" step="any" placeholder="1.370,97" data-buy-price="ethereum">
+        </div>
+      </div>
+
+      <div class="sim-result hidden" data-sim-result="ethereum">
+        <div class="sim-row"><span>Coins erbij</span><span class="mono" data-sim-coins="ethereum"></span></div>
+        <div class="sim-row"><span>Bijkoopbedrag</span><span class="mono" data-sim-euros="ethereum"></span></div>
+        <div class="sim-row"><span>Nieuw totaal</span><span class="mono" data-sim-total="ethereum"></span></div>
+        <div class="sim-row"><span>Nieuwe inzet</span><span class="mono" data-sim-invested="ethereum"></span></div>
+        <div class="sim-row highlight"><span>Nieuwe gem. instap</span><span class="mono" data-sim-avg="ethereum"></span></div>
+      </div>
+      <div class="sim-hint" data-sim-hint="ethereum">Schuif of vul een bedrag in om het effect op je gemiddelde instapprijs te zien.</div>
+    </div>
+    <div class="coin-info" data-info="ethereum">
+      <p>De grootste 'smart contract'-blockchain na Bitcoin. Hierop draaien duizenden apps, NFT's, stablecoins en DeFi-protocollen. Wordt vaak gezien als de fundamentele laag van de bredere cryptowereld.</p>
+    </div>
+  </div><div class="holding">
+    <button class="holding-head" data-toggle="sui">
+      <div class="holding-id">
+        <span class="symbol">SUI</span>
+        <span class="name">Sui</span>
+      </div>
+      <div class="holding-figures">
+        <div class="figure">
+          <span class="figure-label">Aantal</span>
+          <span class="figure-value mono">1.041,39</span>
+        </div>
+        <div class="figure">
+          <span class="figure-label">Gem. instap</span>
+          <span class="figure-value mono">€&nbsp;0,8620</span>
+        </div>
+        <div class="figure">
+          <span class="figure-label">Huidige prijs</span>
+          <span class="figure-value mono price-live flash-down" data-live-price="sui">€&nbsp;0,5931<span class="change loss">-1,16%</span><span class="live-dot ws" title="Realtime via Bitvavo"></span></span>
+          <span class="figure-value price-manual">
+            <span class="manual-wrap">
+              <span class="manual-prefix">€</span>
+              <input class="manual-input" type="number" step="any" min="0" placeholder="invullen" data-manual="sui">
+            </span>
+          </span>
+        </div>
+        <div class="figure">
+          <span class="figure-label">Waarde</span>
+          <span class="figure-value mono flash-down" data-value="sui">€&nbsp;617,66</span>
+        </div>
+        <div class="figure">
+          <span class="figure-label">Resultaat</span>
+          <span class="figure-value mono loss" data-pl="sui">€&nbsp;-282,34<small class="figure-sub">-31,37%</small></span>
+        </div>
+      </div>
+      <svg class="chevron" data-chevron="sui" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </button>
+    <div class="sim" data-sim="sui">
+      <div class="sim-title">Bijkopen simuleren</div>
+
+      <div class="mode-toggle">
+        <button class="mode-btn active" data-mode-btn="euro" data-coin="sui">In euro's</button>
+        <button class="mode-btn" data-mode-btn="coins" data-coin="sui">In aantal coins</button>
+      </div>
+
+      <div class="slider-row">
+        <input type="range" data-slider="sui" min="0" max="1350" step="15" value="0">
+        <div class="slider-amount">
+          <span data-unit-prefix="sui">€</span>
+          <input type="number" min="0" step="any" data-amount="sui" value="0">
+          <span data-unit-suffix="sui"></span>
+        </div>
+      </div>
+
+      <div class="sim-price-row">
+        <span>Tegen prijs</span>
+        <div class="input-prefix">
+          <span>€</span>
+          <input type="number" min="0" step="any" placeholder="0,5931" data-buy-price="sui">
+        </div>
+      </div>
+
+      <div class="sim-result hidden" data-sim-result="sui">
+        <div class="sim-row"><span>Coins erbij</span><span class="mono" data-sim-coins="sui"></span></div>
+        <div class="sim-row"><span>Bijkoopbedrag</span><span class="mono" data-sim-euros="sui"></span></div>
+        <div class="sim-row"><span>Nieuw totaal</span><span class="mono" data-sim-total="sui"></span></div>
+        <div class="sim-row"><span>Nieuwe inzet</span><span class="mono" data-sim-invested="sui"></span></div>
+        <div class="sim-row highlight"><span>Nieuwe gem. instap</span><span class="mono" data-sim-avg="sui"></span></div>
+      </div>
+      <div class="sim-hint" data-sim-hint="sui">Schuif of vul een bedrag in om het effect op je gemiddelde instapprijs te zien.</div>
+    </div>
+    <div class="coin-info" data-info="sui">
+      <p>Een snelle blockchain (2023), eveneens ontwikkeld door oud-Meta/Diem-medewerkers met de programmeertaal Move. Richt zich op snelheid voor games, betalingen en apps.</p>
+    </div>
+  </div><div class="holding">
+    <button class="holding-head" data-toggle="chainlink">
+      <div class="holding-id">
+        <span class="symbol">LINK</span>
+        <span class="name">Chainlink</span>
+      </div>
+      <div class="holding-figures">
+        <div class="figure">
+          <span class="figure-label">Aantal</span>
+          <span class="figure-value mono">61,69</span>
+        </div>
+        <div class="figure">
+          <span class="figure-label">Gem. instap</span>
+          <span class="figure-value mono">€&nbsp;11,32</span>
+        </div>
+        <div class="figure">
+          <span class="figure-label">Huidige prijs</span>
+          <span class="figure-value mono price-live flash-up" data-live-price="chainlink">€&nbsp;6,31<span class="change loss">-1,62%</span><span class="live-dot ws" title="Realtime via Bitvavo"></span></span>
+          <span class="figure-value price-manual">
+            <span class="manual-wrap">
+              <span class="manual-prefix">€</span>
+              <input class="manual-input" type="number" step="any" min="0" placeholder="invullen" data-manual="chainlink">
+            </span>
+          </span>
+        </div>
+        <div class="figure">
+          <span class="figure-label">Waarde</span>
+          <span class="figure-value mono flash-up" data-value="chainlink">€&nbsp;389,18</span>
+        </div>
+        <div class="figure">
+          <span class="figure-label">Resultaat</span>
+          <span class="figure-value mono loss" data-pl="chainlink">€&nbsp;-310,81<small class="figure-sub">-44,40%</small></span>
+        </div>
+      </div>
+      <svg class="chevron" data-chevron="chainlink" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </button>
+    <div class="sim" data-sim="chainlink">
+      <div class="sim-title">Bijkopen simuleren</div>
+
+      <div class="mode-toggle">
+        <button class="mode-btn active" data-mode-btn="euro" data-coin="chainlink">In euro's</button>
+        <button class="mode-btn" data-mode-btn="coins" data-coin="chainlink">In aantal coins</button>
+      </div>
+
+      <div class="slider-row">
+        <input type="range" data-slider="chainlink" min="0" max="1050" step="10" value="0">
+        <div class="slider-amount">
+          <span data-unit-prefix="chainlink">€</span>
+          <input type="number" min="0" step="any" data-amount="chainlink" value="0">
+          <span data-unit-suffix="chainlink"></span>
+        </div>
+      </div>
+
+      <div class="sim-price-row">
+        <span>Tegen prijs</span>
+        <div class="input-prefix">
+          <span>€</span>
+          <input type="number" min="0" step="any" placeholder="6,3086" data-buy-price="chainlink">
+        </div>
+      </div>
+
+      <div class="sim-result hidden" data-sim-result="chainlink">
+        <div class="sim-row"><span>Coins erbij</span><span class="mono" data-sim-coins="chainlink"></span></div>
+        <div class="sim-row"><span>Bijkoopbedrag</span><span class="mono" data-sim-euros="chainlink"></span></div>
+        <div class="sim-row"><span>Nieuw totaal</span><span class="mono" data-sim-total="chainlink"></span></div>
+        <div class="sim-row"><span>Nieuwe inzet</span><span class="mono" data-sim-invested="chainlink"></span></div>
+        <div class="sim-row highlight"><span>Nieuwe gem. instap</span><span class="mono" data-sim-avg="chainlink"></span></div>
+      </div>
+      <div class="sim-hint" data-sim-hint="chainlink">Schuif of vul een bedrag in om het effect op je gemiddelde instapprijs te zien.</div>
+    </div>
+    <div class="coin-info" data-info="chainlink">
+      <p>Een 'oracle'-netwerk dat blockchains betrouwbaar verbindt met data van buitenaf, zoals prijzen. Wordt door talloze DeFi-protocollen gebruikt; LINK betaalt de data-aanbieders.</p>
+    </div>
+  </div><div class="holding">
+    <button class="holding-head" data-toggle="aave">
+      <div class="holding-id">
+        <span class="symbol">AAVE</span>
+        <span class="name">Aave</span>
+      </div>
+      <div class="holding-figures">
+        <div class="figure">
+          <span class="figure-label">Aantal</span>
+          <span class="figure-value mono">2,02</span>
+        </div>
+        <div class="figure">
+          <span class="figure-label">Gem. instap</span>
+          <span class="figure-value mono">€&nbsp;177,14</span>
+        </div>
+        <div class="figure">
+          <span class="figure-label">Huidige prijs</span>
+          <span class="figure-value mono price-live flash-down" data-live-price="aave">€&nbsp;79,90<span class="change loss">-2,45%</span><span class="live-dot ws" title="Realtime via Bitvavo"></span></span>
+          <span class="figure-value price-manual">
+            <span class="manual-wrap">
+              <span class="manual-prefix">€</span>
+              <input class="manual-input" type="number" step="any" min="0" placeholder="invullen" data-manual="aave">
+            </span>
+          </span>
+        </div>
+        <div class="figure">
+          <span class="figure-label">Waarde</span>
+          <span class="figure-value mono flash-down" data-value="aave">€&nbsp;161,40</span>
+        </div>
+        <div class="figure">
+          <span class="figure-label">Resultaat</span>
+          <span class="figure-value mono loss" data-pl="aave">€&nbsp;-198,93<small class="figure-sub">-55,21%</small></span>
+        </div>
+      </div>
+      <svg class="chevron" data-chevron="aave" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </button>
+    <div class="sim" data-sim="aave">
+      <div class="sim-title">Bijkopen simuleren</div>
+
+      <div class="mode-toggle">
+        <button class="mode-btn active" data-mode-btn="euro" data-coin="aave">In euro's</button>
+        <button class="mode-btn" data-mode-btn="coins" data-coin="aave">In aantal coins</button>
+      </div>
+
+      <div class="slider-row">
+        <input type="range" data-slider="aave" min="0" max="550" step="5" value="0">
+        <div class="slider-amount">
+          <span data-unit-prefix="aave">€</span>
+          <input type="number" min="0" step="any" data-amount="aave" value="0">
+          <span data-unit-suffix="aave"></span>
+        </div>
+      </div>
+
+      <div class="sim-price-row">
+        <span>Tegen prijs</span>
+        <div class="input-prefix">
+          <span>€</span>
+          <input type="number" min="0" step="any" placeholder="79,9" data-buy-price="aave">
+        </div>
+      </div>
+
+      <div class="sim-result hidden" data-sim-result="aave">
+        <div class="sim-row"><span>Coins erbij</span><span class="mono" data-sim-coins="aave"></span></div>
+        <div class="sim-row"><span>Bijkoopbedrag</span><span class="mono" data-sim-euros="aave"></span></div>
+        <div class="sim-row"><span>Nieuw totaal</span><span class="mono" data-sim-total="aave"></span></div>
+        <div class="sim-row"><span>Nieuwe inzet</span><span class="mono" data-sim-invested="aave"></span></div>
+        <div class="sim-row highlight"><span>Nieuwe gem. instap</span><span class="mono" data-sim-avg="aave"></span></div>
+      </div>
+      <div class="sim-hint" data-sim-hint="aave">Schuif of vul een bedrag in om het effect op je gemiddelde instapprijs te zien.</div>
+    </div>
+    <div class="coin-info" data-info="aave">
+      <p>Een van de grootste DeFi-protocollen waarmee je crypto kunt uitlenen en lenen zonder bank. AAVE is het bestuurs-token waarmee houders mogen meebeslissen over het protocol.</p>
+    </div>
+  </div><div class="holding">
+    <button class="holding-head" data-toggle="aptos">
+      <div class="holding-id">
+        <span class="symbol">APT</span>
+        <span class="name">Aptos</span>
+      </div>
+      <div class="holding-figures">
+        <div class="figure">
+          <span class="figure-label">Aantal</span>
+          <span class="figure-value mono">196,8</span>
+        </div>
+        <div class="figure">
+          <span class="figure-label">Gem. instap</span>
+          <span class="figure-value mono">€&nbsp;2,77</span>
+        </div>
+        <div class="figure">
+          <span class="figure-label">Huidige prijs</span>
+          <span class="figure-value mono price-live flash-up" data-live-price="aptos">€&nbsp;0,5019<span class="change loss">-1,78%</span><span class="live-dot ws" title="Realtime via Bitvavo"></span></span>
+          <span class="figure-value price-manual">
+            <span class="manual-wrap">
+              <span class="manual-prefix">€</span>
+              <input class="manual-input" type="number" step="any" min="0" placeholder="invullen" data-manual="aptos">
+            </span>
+          </span>
+        </div>
+        <div class="figure">
+          <span class="figure-label">Waarde</span>
+          <span class="figure-value mono flash-up" data-value="aptos">€&nbsp;98,77</span>
+        </div>
+        <div class="figure">
+          <span class="figure-label">Resultaat</span>
+          <span class="figure-value mono loss" data-pl="aptos">€&nbsp;-450,42<small class="figure-sub">-82,01%</small></span>
+        </div>
+      </div>
+      <svg class="chevron" data-chevron="aptos" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </button>
+    <div class="sim" data-sim="aptos">
+      <div class="sim-title">Bijkopen simuleren</div>
+
+      <div class="mode-toggle">
+        <button class="mode-btn active" data-mode-btn="euro" data-coin="aptos">In euro's</button>
+        <button class="mode-btn" data-mode-btn="coins" data-coin="aptos">In aantal coins</button>
+      </div>
+
+      <div class="slider-row">
+        <input type="range" data-slider="aptos" min="0" max="850" step="10" value="0">
+        <div class="slider-amount">
+          <span data-unit-prefix="aptos">€</span>
+          <input type="number" min="0" step="any" data-amount="aptos" value="0">
+          <span data-unit-suffix="aptos"></span>
+        </div>
+      </div>
+
+      <div class="sim-price-row">
+        <span>Tegen prijs</span>
+        <div class="input-prefix">
+          <span>€</span>
+          <input type="number" min="0" step="any" placeholder="0,5019" data-buy-price="aptos">
+        </div>
+      </div>
+
+      <div class="sim-result hidden" data-sim-result="aptos">
+        <div class="sim-row"><span>Coins erbij</span><span class="mono" data-sim-coins="aptos"></span></div>
+        <div class="sim-row"><span>Bijkoopbedrag</span><span class="mono" data-sim-euros="aptos"></span></div>
+        <div class="sim-row"><span>Nieuw totaal</span><span class="mono" data-sim-total="aptos"></span></div>
+        <div class="sim-row"><span>Nieuwe inzet</span><span class="mono" data-sim-invested="aptos"></span></div>
+        <div class="sim-row highlight"><span>Nieuwe gem. instap</span><span class="mono" data-sim-avg="aptos"></span></div>
+      </div>
+      <div class="sim-hint" data-sim-hint="aptos">Schuif of vul een bedrag in om het effect op je gemiddelde instapprijs te zien.</div>
+    </div>
+    <div class="coin-info" data-info="aptos">
+      <p>Een relatief nieuwe blockchain (2022), opgezet door oud-Meta/Diem-medewerkers en gebouwd rond de programmeertaal Move. Gericht op snelheid en veiligheid, ecosysteem nog in opbouw.</p>
+    </div>
+  </div><div class="holding">
+    <button class="holding-head" data-toggle="avalanche-2">
+      <div class="holding-id">
+        <span class="symbol">AVAX</span>
+        <span class="name">Avalanche</span>
+      </div>
+      <div class="holding-figures">
+        <div class="figure">
+          <span class="figure-label">Aantal</span>
+          <span class="figure-value mono">17,57</span>
+        </div>
+        <div class="figure">
+          <span class="figure-label">Gem. instap</span>
+          <span class="figure-value mono">€&nbsp;5,68</span>
+        </div>
+        <div class="figure">
+          <span class="figure-label">Huidige prijs</span>
+          <span class="figure-value mono price-live flash-up" data-live-price="avalanche-2">€&nbsp;5,54<span class="change loss">-1,07%</span><span class="live-dot ws" title="Realtime via Bitvavo"></span></span>
+          <span class="figure-value price-manual">
+            <span class="manual-wrap">
+              <span class="manual-prefix">€</span>
+              <input class="manual-input" type="number" step="any" min="0" placeholder="invullen" data-manual="avalanche-2">
+            </span>
+          </span>
+        </div>
+        <div class="figure">
+          <span class="figure-label">Waarde</span>
+          <span class="figure-value mono flash-up" data-value="avalanche-2">€&nbsp;97,37</span>
+        </div>
+        <div class="figure">
+          <span class="figure-label">Resultaat</span>
+          <span class="figure-value mono loss" data-pl="avalanche-2">€&nbsp;-2,63<small class="figure-sub">-2,63%</small></span>
+        </div>
+      </div>
+      <svg class="chevron" data-chevron="avalanche-2" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </button>
+    <div class="sim" data-sim="avalanche-2">
+      <div class="sim-title">Bijkopen simuleren</div>
+
+      <div class="mode-toggle">
+        <button class="mode-btn active" data-mode-btn="euro" data-coin="avalanche-2">In euro's</button>
+        <button class="mode-btn" data-mode-btn="coins" data-coin="avalanche-2">In aantal coins</button>
+      </div>
+
+      <div class="slider-row">
+        <input type="range" data-slider="avalanche-2" min="0" max="500" step="5" value="0">
+        <div class="slider-amount">
+          <span data-unit-prefix="avalanche-2">€</span>
+          <input type="number" min="0" step="any" data-amount="avalanche-2" value="0">
+          <span data-unit-suffix="avalanche-2"></span>
+        </div>
+      </div>
+
+      <div class="sim-price-row">
+        <span>Tegen prijs</span>
+        <div class="input-prefix">
+          <span>€</span>
+          <input type="number" min="0" step="any" placeholder="5,5419" data-buy-price="avalanche-2">
+        </div>
+      </div>
+
+      <div class="sim-result hidden" data-sim-result="avalanche-2">
+        <div class="sim-row"><span>Coins erbij</span><span class="mono" data-sim-coins="avalanche-2"></span></div>
+        <div class="sim-row"><span>Bijkoopbedrag</span><span class="mono" data-sim-euros="avalanche-2"></span></div>
+        <div class="sim-row"><span>Nieuw totaal</span><span class="mono" data-sim-total="avalanche-2"></span></div>
+        <div class="sim-row"><span>Nieuwe inzet</span><span class="mono" data-sim-invested="avalanche-2"></span></div>
+        <div class="sim-row highlight"><span>Nieuwe gem. instap</span><span class="mono" data-sim-avg="avalanche-2"></span></div>
+      </div>
+      <div class="sim-hint" data-sim-hint="avalanche-2">Schuif of vul een bedrag in om het effect op je gemiddelde instapprijs te zien.</div>
+    </div>
+    <div class="coin-info" data-info="avalanche-2">
+      <p>De munt van Avalanche, een smart-contract-platform gericht op hoge snelheid, lage kosten en snelle 'finaliteit' (het moment waarop een transactie definitief vaststaat). Het netwerk draait op proof-of-stake en kan eigen subnetwerken hosten.</p>
+    </div>
+  </div><div class="holding">
+    <button class="holding-head" data-toggle="ripple">
+      <div class="holding-id">
+        <span class="symbol">XRP</span>
+        <span class="name">XRP</span>
+      </div>
+      <div class="holding-figures">
+        <div class="figure">
+          <span class="figure-label">Aantal</span>
+          <span class="figure-value mono">26,353</span>
+        </div>
+        <div class="figure">
+          <span class="figure-label">Gem. instap</span>
+          <span class="figure-value mono">€&nbsp;0,9459</span>
+        </div>
+        <div class="figure">
+          <span class="figure-label">Huidige prijs</span>
+          <span class="figure-value mono price-live flash-up" data-live-price="ripple">€&nbsp;0,9128<span class="change loss">-1,04%</span><span class="live-dot ws" title="Realtime via Bitvavo"></span></span>
+          <span class="figure-value price-manual">
+            <span class="manual-wrap">
+              <span class="manual-prefix">€</span>
+              <input class="manual-input" type="number" step="any" min="0" placeholder="invullen" data-manual="ripple">
+            </span>
+          </span>
+        </div>
+        <div class="figure">
+          <span class="figure-label">Waarde</span>
+          <span class="figure-value mono flash-up" data-value="ripple">€&nbsp;24,06</span>
+        </div>
+        <div class="figure">
+          <span class="figure-label">Resultaat</span>
+          <span class="figure-value mono loss" data-pl="ripple">€&nbsp;-0,9347<small class="figure-sub">-3,74%</small></span>
+        </div>
+      </div>
+      <svg class="chevron" data-chevron="ripple" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </button>
+    <div class="sim" data-sim="ripple">
+      <div class="sim-title">Bijkopen simuleren</div>
+
+      <div class="mode-toggle">
+        <button class="mode-btn active" data-mode-btn="euro" data-coin="ripple">In euro's</button>
+        <button class="mode-btn" data-mode-btn="coins" data-coin="ripple">In aantal coins</button>
+      </div>
+
+      <div class="slider-row">
+        <input type="range" data-slider="ripple" min="0" max="500" step="5" value="0">
+        <div class="slider-amount">
+          <span data-unit-prefix="ripple">€</span>
+          <input type="number" min="0" step="any" data-amount="ripple" value="0">
+          <span data-unit-suffix="ripple"></span>
+        </div>
+      </div>
+
+      <div class="sim-price-row">
+        <span>Tegen prijs</span>
+        <div class="input-prefix">
+          <span>€</span>
+          <input type="number" min="0" step="any" placeholder="0,9128" data-buy-price="ripple">
+        </div>
+      </div>
+
+      <div class="sim-result hidden" data-sim-result="ripple">
+        <div class="sim-row"><span>Coins erbij</span><span class="mono" data-sim-coins="ripple"></span></div>
+        <div class="sim-row"><span>Bijkoopbedrag</span><span class="mono" data-sim-euros="ripple"></span></div>
+        <div class="sim-row"><span>Nieuw totaal</span><span class="mono" data-sim-total="ripple"></span></div>
+        <div class="sim-row"><span>Nieuwe inzet</span><span class="mono" data-sim-invested="ripple"></span></div>
+        <div class="sim-row highlight"><span>Nieuwe gem. instap</span><span class="mono" data-sim-avg="ripple"></span></div>
+      </div>
+      <div class="sim-hint" data-sim-hint="ripple">Schuif of vul een bedrag in om het effect op je gemiddelde instapprijs te zien.</div>
+    </div>
+    <div class="coin-info" data-info="ripple">
+      <p>Een digitaal token op de XRP Ledger, gericht op snelle en goedkope internationale betalingen en valuta-overboekingen. Wordt geassocieerd met het bedrijf Ripple, dat de techniek aanbiedt aan banken en betaaldienstverleners.</p>
+    </div>
+  </div><div class="holding">
+    <button class="holding-head" data-toggle="hedera-hashgraph">
+      <div class="holding-id">
+        <span class="symbol">HBAR</span>
+        <span class="name">Hedera</span>
+      </div>
+      <div class="holding-figures">
+        <div class="figure">
+          <span class="figure-label">Aantal</span>
+          <span class="figure-value mono">370,179</span>
+        </div>
+        <div class="figure">
+          <span class="figure-label">Gem. instap</span>
+          <span class="figure-value mono">€&nbsp;0,0674</span>
+        </div>
+        <div class="figure">
+          <span class="figure-label">Huidige prijs</span>
+          <span class="figure-value mono price-live flash-down" data-live-price="hedera-hashgraph">€&nbsp;0,0619<span class="change loss">-1,78%</span><span class="live-dot ws" title="Realtime via Bitvavo"></span></span>
+          <span class="figure-value price-manual">
+            <span class="manual-wrap">
+              <span class="manual-prefix">€</span>
+              <input class="manual-input" type="number" step="any" min="0" placeholder="invullen" data-manual="hedera-hashgraph">
+            </span>
+          </span>
+        </div>
+        <div class="figure">
+          <span class="figure-label">Waarde</span>
+          <span class="figure-value mono flash-down" data-value="hedera-hashgraph">€&nbsp;22,92</span>
+        </div>
+        <div class="figure">
+          <span class="figure-label">Resultaat</span>
+          <span class="figure-value mono loss" data-pl="hedera-hashgraph">€&nbsp;-2,08<small class="figure-sub">-8,31%</small></span>
+        </div>
+      </div>
+      <svg class="chevron" data-chevron="hedera-hashgraph" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </button>
+    <div class="sim" data-sim="hedera-hashgraph">
+      <div class="sim-title">Bijkopen simuleren</div>
+
+      <div class="mode-toggle">
+        <button class="mode-btn active" data-mode-btn="euro" data-coin="hedera-hashgraph">In euro's</button>
+        <button class="mode-btn" data-mode-btn="coins" data-coin="hedera-hashgraph">In aantal coins</button>
+      </div>
+
+      <div class="slider-row">
+        <input type="range" data-slider="hedera-hashgraph" min="0" max="500" step="5" value="0">
+        <div class="slider-amount">
+          <span data-unit-prefix="hedera-hashgraph">€</span>
+          <input type="number" min="0" step="any" data-amount="hedera-hashgraph" value="0">
+          <span data-unit-suffix="hedera-hashgraph"></span>
+        </div>
+      </div>
+
+      <div class="sim-price-row">
+        <span>Tegen prijs</span>
+        <div class="input-prefix">
+          <span>€</span>
+          <input type="number" min="0" step="any" placeholder="0,0619" data-buy-price="hedera-hashgraph">
+        </div>
+      </div>
+
+      <div class="sim-result hidden" data-sim-result="hedera-hashgraph">
+        <div class="sim-row"><span>Coins erbij</span><span class="mono" data-sim-coins="hedera-hashgraph"></span></div>
+        <div class="sim-row"><span>Bijkoopbedrag</span><span class="mono" data-sim-euros="hedera-hashgraph"></span></div>
+        <div class="sim-row"><span>Nieuw totaal</span><span class="mono" data-sim-total="hedera-hashgraph"></span></div>
+        <div class="sim-row"><span>Nieuwe inzet</span><span class="mono" data-sim-invested="hedera-hashgraph"></span></div>
+        <div class="sim-row highlight"><span>Nieuwe gem. instap</span><span class="mono" data-sim-avg="hedera-hashgraph"></span></div>
+      </div>
+      <div class="sim-hint" data-sim-hint="hedera-hashgraph">Schuif of vul een bedrag in om het effect op je gemiddelde instapprijs te zien.</div>
+    </div>
+    <div class="coin-info" data-info="hedera-hashgraph">
+      <p>De munt van Hedera, een netwerk dat 'hashgraph'-consensus gebruikt in plaats van een klassieke blockchain. Het wordt bestuurd door een raad van grote organisaties (o.a. Google, IBM en Boeing). HBAR betaalt voor transacties en netwerkdiensten.</p>
+    </div>
+  </div><div class="holding">
+    <button class="holding-head" data-toggle="bittensor">
+      <div class="holding-id">
+        <span class="symbol">TAO</span>
+        <span class="name">Bittensor</span>
+      </div>
+      <div class="holding-figures">
+        <div class="figure">
+          <span class="figure-label">Aantal</span>
+          <span class="figure-value mono">0,128</span>
+        </div>
+        <div class="figure">
+          <span class="figure-label">Gem. instap</span>
+          <span class="figure-value mono">€&nbsp;194,24</span>
+        </div>
+        <div class="figure">
+          <span class="figure-label">Huidige prijs</span>
+          <span class="figure-value mono price-live flash-up" data-live-price="bittensor">€&nbsp;178,04<span class="change loss">-3,09%</span><span class="live-dot ws" title="Realtime via Bitvavo"></span></span>
+          <span class="figure-value price-manual">
+            <span class="manual-wrap">
+              <span class="manual-prefix">€</span>
+              <input class="manual-input" type="number" step="any" min="0" placeholder="invullen" data-manual="bittensor">
+            </span>
+          </span>
+        </div>
+        <div class="figure">
+          <span class="figure-label">Waarde</span>
+          <span class="figure-value mono flash-up" data-value="bittensor">€&nbsp;22,79</span>
+        </div>
+        <div class="figure">
+          <span class="figure-label">Resultaat</span>
+          <span class="figure-value mono loss" data-pl="bittensor">€&nbsp;-2,21<small class="figure-sub">-8,84%</small></span>
+        </div>
+      </div>
+      <svg class="chevron" data-chevron="bittensor" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </button>
+    <div class="sim" data-sim="bittensor">
+      <div class="sim-title">Bijkopen simuleren</div>
+
+      <div class="mode-toggle">
+        <button class="mode-btn active" data-mode-btn="euro" data-coin="bittensor">In euro's</button>
+        <button class="mode-btn" data-mode-btn="coins" data-coin="bittensor">In aantal coins</button>
+      </div>
+
+      <div class="slider-row">
+        <input type="range" data-slider="bittensor" min="0" max="500" step="5" value="0">
+        <div class="slider-amount">
+          <span data-unit-prefix="bittensor">€</span>
+          <input type="number" min="0" step="any" data-amount="bittensor" value="0">
+          <span data-unit-suffix="bittensor"></span>
+        </div>
+      </div>
+
+      <div class="sim-price-row">
+        <span>Tegen prijs</span>
+        <div class="input-prefix">
+          <span>€</span>
+          <input type="number" min="0" step="any" placeholder="178,04" data-buy-price="bittensor">
+        </div>
+      </div>
+
+      <div class="sim-result hidden" data-sim-result="bittensor">
+        <div class="sim-row"><span>Coins erbij</span><span class="mono" data-sim-coins="bittensor"></span></div>
+        <div class="sim-row"><span>Bijkoopbedrag</span><span class="mono" data-sim-euros="bittensor"></span></div>
+        <div class="sim-row"><span>Nieuw totaal</span><span class="mono" data-sim-total="bittensor"></span></div>
+        <div class="sim-row"><span>Nieuwe inzet</span><span class="mono" data-sim-invested="bittensor"></span></div>
+        <div class="sim-row highlight"><span>Nieuwe gem. instap</span><span class="mono" data-sim-avg="bittensor"></span></div>
+      </div>
+      <div class="sim-hint" data-sim-hint="bittensor">Schuif of vul een bedrag in om het effect op je gemiddelde instapprijs te zien.</div>
+    </div>
+    <div class="coin-info" data-info="bittensor">
+      <p>Een gedecentraliseerd, open-source netwerk dat machine learning en AI wil aanjagen. Via 'subnets' werken AI-modellen samen en concurreren ze; deelnemers worden in TAO beloond naar de waarde die ze leveren. Het maximale aanbod is 21 miljoen, net als bij Bitcoin.</p>
+    </div>
+  </div><div class="holding">
+    <button class="holding-head" data-toggle="helium">
+      <div class="holding-id">
+        <span class="symbol">HNT</span>
+        <span class="name">Helium</span>
+      </div>
+      <div class="holding-figures">
+        <div class="figure">
+          <span class="figure-label">Aantal</span>
+          <span class="figure-value mono">41,92</span>
+        </div>
+        <div class="figure">
+          <span class="figure-label">Gem. instap</span>
+          <span class="figure-value mono">€&nbsp;5,88</span>
+        </div>
+        <div class="figure">
+          <span class="figure-label">Huidige prijs</span>
+          <span class="figure-value mono price-live flash-down" data-live-price="helium">€&nbsp;0,2269<span class="change loss">-4,92%</span><span class="live-dot ws" title="Realtime via Bitvavo"></span></span>
+          <span class="figure-value price-manual">
+            <span class="manual-wrap">
+              <span class="manual-prefix">€</span>
+              <input class="manual-input" type="number" step="any" min="0" placeholder="invullen" data-manual="helium">
+            </span>
+          </span>
+        </div>
+        <div class="figure">
+          <span class="figure-label">Waarde</span>
+          <span class="figure-value mono flash-down" data-value="helium">€&nbsp;9,51</span>
+        </div>
+        <div class="figure">
+          <span class="figure-label">Resultaat</span>
+          <span class="figure-value mono loss" data-pl="helium">€&nbsp;-240,49<small class="figure-sub">-96,20%</small></span>
+        </div>
+      </div>
+      <svg class="chevron" data-chevron="helium" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </button>
+    <div class="sim" data-sim="helium">
+      <div class="sim-title">Bijkopen simuleren</div>
+
+      <div class="mode-toggle">
+        <button class="mode-btn active" data-mode-btn="euro" data-coin="helium">In euro's</button>
+        <button class="mode-btn" data-mode-btn="coins" data-coin="helium">In aantal coins</button>
+      </div>
+
+      <div class="slider-row">
+        <input type="range" data-slider="helium" min="0" max="500" step="5" value="0">
+        <div class="slider-amount">
+          <span data-unit-prefix="helium">€</span>
+          <input type="number" min="0" step="any" data-amount="helium" value="0">
+          <span data-unit-suffix="helium"></span>
+        </div>
+      </div>
+
+      <div class="sim-price-row">
+        <span>Tegen prijs</span>
+        <div class="input-prefix">
+          <span>€</span>
+          <input type="number" min="0" step="any" placeholder="0,2269" data-buy-price="helium">
+        </div>
+      </div>
+
+      <div class="sim-result hidden" data-sim-result="helium">
+        <div class="sim-row"><span>Coins erbij</span><span class="mono" data-sim-coins="helium"></span></div>
+        <div class="sim-row"><span>Bijkoopbedrag</span><span class="mono" data-sim-euros="helium"></span></div>
+        <div class="sim-row"><span>Nieuw totaal</span><span class="mono" data-sim-total="helium"></span></div>
+        <div class="sim-row"><span>Nieuwe inzet</span><span class="mono" data-sim-invested="helium"></span></div>
+        <div class="sim-row highlight"><span>Nieuwe gem. instap</span><span class="mono" data-sim-avg="helium"></span></div>
+      </div>
+      <div class="sim-hint" data-sim-hint="helium">Schuif of vul een bedrag in om het effect op je gemiddelde instapprijs te zien.</div>
+    </div>
+    <div class="coin-info" data-info="helium">
+      <p>Een netwerk van door gebruikers opgezette draadloze hotspots ('the people's network'). Eigenaren van apparatuur worden beloond voor het aanbieden van dekking voor IoT-toepassingen.</p>
+    </div>
+  </div></div>
+
+</div><!-- /vault -->
+</div><!-- /vaultApp -->
+
+<script>
+// ====== PIN LOCK ======
+(function(){
+  const PIN = "010";
+  const SESSION_KEY = "hv_unlocked";
+  const lock  = document.getElementById("lockScreen");
+  const vault = document.getElementById("vaultApp");
+  const dots  = [document.getElementById("d0"), document.getElementById("d1"), document.getElementById("d2")];
+  const pad   = document.getElementById("pinPad");
+  let entered = "";
+
+  function unlock(){
+    sessionStorage.setItem(SESSION_KEY,"1");
+    lock.classList.add("hidden");
+    vault.style.display = "block";
+  }
+
+  // already unlocked this session?
+  if(sessionStorage.getItem(SESSION_KEY) === "1"){ unlock(); }
+
+  function updateDots(){
+    dots.forEach((d,i)=>{
+      d.classList.toggle("filled", i < entered.length);
+      d.classList.remove("error");
+    });
+  }
+
+  function shake(){
+    dots.forEach(d=>{ d.classList.remove("filled"); d.classList.add("error"); });
+    pad.classList.add("lock-shake");
+    setTimeout(()=>{ pad.classList.remove("lock-shake"); entered=""; updateDots(); }, 500);
+  }
+
+  pad.addEventListener("click", e=>{
+    const btn = e.target.closest(".pin-btn");
+    if(!btn) return;
+    const n = btn.dataset.n;
+    if(n === "del"){ entered = entered.slice(0,-1); updateDots(); return; }
+    if(n === "ok"){
+      if(entered === PIN) unlock();
+      else shake();
+      return;
+    }
+    if(entered.length >= PIN.length) return;
+    entered += n;
+    updateDots();
+    if(entered.length === PIN.length){
+      setTimeout(()=>{ if(entered === PIN) unlock(); else shake(); }, 120);
+    }
+  });
+
+  // also support physical keyboard
+  document.addEventListener("keydown", e=>{
+    if(lock.classList.contains("hidden")) return;
+    if(e.key >= "0" && e.key <= "9" && entered.length < PIN.length){
+      entered += e.key; updateDots();
+      if(entered.length === PIN.length) setTimeout(()=>{ if(entered===PIN) unlock(); else shake(); },120);
+    }
+    if(e.key === "Backspace"){ entered=entered.slice(0,-1); updateDots(); }
+    if(e.key === "Enter"){ if(entered===PIN) unlock(); else shake(); }
+  });
+})();
+// ====== END PIN LOCK ======
+const HOLDINGS = [
+  { id:"ethereum",  symbol:"ETH",  name:"Ethereum",  amount:1.06,    avgEntry:2426.80, invested:2577.14,
+    desc:"De grootste 'smart contract'-blockchain na Bitcoin. Hierop draaien duizenden apps, NFT's, stablecoins en DeFi-protocollen. Wordt vaak gezien als de fundamentele laag van de bredere cryptowereld." },
+  { id:"solana",    symbol:"SOL",  name:"Solana",    amount:26,      avgEntry:99.53,   invested:2604.21,
+    desc:"Een zeer snelle en goedkope blockchain, populair voor handel, apps en meme-coins. Wint terrein dankzij lage transactiekosten, maar heeft in het verleden ook netwerkstoringen gehad." },
+  { id:"aptos",     symbol:"APT",  name:"Aptos",     amount:196.80,  avgEntry:2.77,    invested:549.19,
+    desc:"Een relatief nieuwe blockchain (2022), opgezet door oud-Meta/Diem-medewerkers en gebouwd rond de programmeertaal Move. Gericht op snelheid en veiligheid, ecosysteem nog in opbouw." },
+  { id:"helium",    symbol:"HNT",  name:"Helium",    amount:41.92,   avgEntry:5.88,    invested:250.00,
+    desc:"Een netwerk van door gebruikers opgezette draadloze hotspots ('the people's network'). Eigenaren van apparatuur worden beloond voor het aanbieden van dekking voor IoT-toepassingen." },
+  { id:"aave",      symbol:"AAVE", name:"Aave",      amount:2.02,    avgEntry:177.14,  invested:360.33,
+    desc:"Een van de grootste DeFi-protocollen waarmee je crypto kunt uitlenen en lenen zonder bank. AAVE is het bestuurs-token waarmee houders mogen meebeslissen over het protocol." },
+  { id:"chainlink", symbol:"LINK", name:"Chainlink", amount:61.69,   avgEntry:11.32,   invested:699.99,
+    desc:"Een 'oracle'-netwerk dat blockchains betrouwbaar verbindt met data van buitenaf, zoals prijzen. Wordt door talloze DeFi-protocollen gebruikt; LINK betaalt de data-aanbieders." },
+  { id:"sui",       symbol:"SUI",  name:"Sui",       amount:1041.39, avgEntry:0.86195, invested:900.00,
+    desc:"Een snelle blockchain (2023), eveneens ontwikkeld door oud-Meta/Diem-medewerkers met de programmeertaal Move. Richt zich op snelheid voor games, betalingen en apps." },
+  { id:"bittensor", symbol:"TAO",  name:"Bittensor", amount:0.128,   avgEntry:194.24,  invested:25.00,
+    desc:"Een gedecentraliseerd, open-source netwerk dat machine learning en AI wil aanjagen. Via 'subnets' werken AI-modellen samen en concurreren ze; deelnemers worden in TAO beloond naar de waarde die ze leveren. Het maximale aanbod is 21 miljoen, net als bij Bitcoin." },
+  { id:"ripple",    symbol:"XRP",  name:"XRP",       amount:26.353,  avgEntry:0.94591, invested:24.99,
+    desc:"Een digitaal token op de XRP Ledger, gericht op snelle en goedkope internationale betalingen en valuta-overboekingen. Wordt geassocieerd met het bedrijf Ripple, dat de techniek aanbiedt aan banken en betaaldienstverleners." },
+  { id:"hedera-hashgraph", symbol:"HBAR", name:"Hedera", amount:370.179, avgEntry:0.067373, invested:25.00,
+    desc:"De munt van Hedera, een netwerk dat 'hashgraph'-consensus gebruikt in plaats van een klassieke blockchain. Het wordt bestuurd door een raad van grote organisaties (o.a. Google, IBM en Boeing). HBAR betaalt voor transacties en netwerkdiensten." },
+  { id:"avalanche-2", symbol:"AVAX", name:"Avalanche", amount:17.57, avgEntry:5.6775,  invested:100.00,
+    desc:"De munt van Avalanche, een smart-contract-platform gericht op hoge snelheid, lage kosten en snelle 'finaliteit' (het moment waarop een transactie definitief vaststaat). Het netwerk draait op proof-of-stake en kan eigen subnetwerken hosten." },
+];
+const CASH = 25.02;
+const DEPOSITED = 8300;
+
+let prices = {};
+let changes = {};
+let manualPrices = {};
+let liveOk = null;
+const simState = {};
+const cardEls = {};
+HOLDINGS.forEach(h => simState[h.id] = { mode:"euro", amount:0, price:"" });
+
+// ---------- Bitvavo realtime (experimenteel) ----------
+// Bitvavo handelt alles rechtstreeks in EUR, dus geen omrekening nodig.
+const BITVAVO_MARKETS = {
+  ethereum:           "ETH-EUR",
+  solana:             "SOL-EUR",
+  aptos:              "APT-EUR",
+  helium:             "HNT-EUR",
+  aave:               "AAVE-EUR",
+  chainlink:          "LINK-EUR",
+  sui:                "SUI-EUR",
+  bittensor:          "TAO-EUR",
+  ripple:             "XRP-EUR",
+  "hedera-hashgraph": "HBAR-EUR",
+  "avalanche-2":      "AVAX-EUR",
+};
+const MARKET_TO_ID = {};
+Object.entries(BITVAVO_MARKETS).forEach(([id,m]) => { MARKET_TO_ID[m] = id; });
+
+const wsPrices = {};
+const wsSource = {};
+const prevPrice = {};
+const lastRender = {};
+
+function fmtEUR(n){
+  if(n==null || isNaN(n)) return "—";
+  const dec = Math.abs(n) < 1 ? 4 : 2;
+  return new Intl.NumberFormat("nl-NL",{style:"currency",currency:"EUR",minimumFractionDigits:dec,maximumFractionDigits:dec}).format(n);
+}
+function fmtNum(n, dec=4){ return new Intl.NumberFormat("nl-NL",{maximumFractionDigits:dec}).format(n); }
+function fmtPct(n){ return (n>=0?"+":"") + n.toFixed(2).replace(".",",") + "%"; }
+
+function getPriceInfo(h){
+  if(wsPrices[h.id] != null) return { price: wsPrices[h.id], known:true, source:"ws" };
+  if(prices[h.id] != null) return { price: prices[h.id], known:true, source:"cg" };
+  const m = parseFloat(manualPrices[h.id]);
+  if(!isNaN(m) && m > 0) return { price: m, known:true, source:"manual" };
+  return { price: null, known:false, source:null };
+}
+
+function sliderConfig(h, mode){
+  if(mode === "euro"){
+    const max = Math.max(500, Math.ceil((h.invested*1.5)/50)*50);
+    return { min:0, max, step: Math.max(5, Math.round(max/100/5)*5) };
+  } else {
+    let step;
+    if(h.amount >= 100) step = 1;
+    else if(h.amount >= 10) step = 0.1;
+    else if(h.amount >= 1) step = 0.01;
+    else step = 0.001;
+    const max = Math.ceil((h.amount*2)/step)*step;
+    return { min:0, max, step };
+  }
+}
+
+// ---------- build holding cards ----------
+const holdingsEl = document.getElementById("holdings");
+holdingsEl.innerHTML = "";
+HOLDINGS.forEach(h => {
+  const card = document.createElement("div");
+  card.className = "holding";
+  card.innerHTML = `
+    <button class="holding-head" data-toggle="${h.id}">
+      <div class="holding-id">
+        <span class="symbol">${h.symbol}</span>
+        <span class="name">${h.name}</span>
+      </div>
+      <div class="holding-figures">
+        <div class="figure">
+          <span class="figure-label">Aantal</span>
+          <span class="figure-value mono">${fmtNum(h.amount)}</span>
+        </div>
+        <div class="figure">
+          <span class="figure-label">Gem. instap</span>
+          <span class="figure-value mono">${fmtEUR(h.avgEntry)}</span>
+        </div>
+        <div class="figure">
+          <span class="figure-label">Huidige prijs</span>
+          <span class="figure-value mono price-live" data-live-price="${h.id}"></span>
+          <span class="figure-value price-manual">
+            <span class="manual-wrap">
+              <span class="manual-prefix">€</span>
+              <input class="manual-input" type="number" step="any" min="0" placeholder="invullen" data-manual="${h.id}">
+            </span>
+          </span>
+        </div>
+        <div class="figure">
+          <span class="figure-label">Waarde</span>
+          <span class="figure-value mono" data-value="${h.id}"></span>
+        </div>
+        <div class="figure">
+          <span class="figure-label">Resultaat</span>
+          <span class="figure-value mono" data-pl="${h.id}"></span>
+        </div>
+      </div>
+      <svg class="chevron" data-chevron="${h.id}" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="sim" data-sim="${h.id}">
+      <div class="sim-title">Bijkopen simuleren</div>
+
+      <div class="mode-toggle">
+        <button class="mode-btn active" data-mode-btn="euro" data-coin="${h.id}">In euro's</button>
+        <button class="mode-btn" data-mode-btn="coins" data-coin="${h.id}">In aantal coins</button>
+      </div>
+
+      <div class="slider-row">
+        <input type="range" data-slider="${h.id}" min="0" max="${sliderConfig(h,'euro').max}" step="${sliderConfig(h,'euro').step}" value="0">
+        <div class="slider-amount">
+          <span data-unit-prefix="${h.id}">€</span>
+          <input type="number" min="0" step="any" data-amount="${h.id}" value="0">
+          <span data-unit-suffix="${h.id}"></span>
+        </div>
+      </div>
+
+      <div class="sim-price-row">
+        <span>Tegen prijs</span>
+        <div class="input-prefix">
+          <span>€</span>
+          <input type="number" min="0" step="any" placeholder="huidige prijs" data-buy-price="${h.id}">
+        </div>
+      </div>
+
+      <div class="sim-result hidden" data-sim-result="${h.id}">
+        <div class="sim-row"><span>Coins erbij</span><span class="mono" data-sim-coins="${h.id}"></span></div>
+        <div class="sim-row"><span>Bijkoopbedrag</span><span class="mono" data-sim-euros="${h.id}"></span></div>
+        <div class="sim-row"><span>Nieuw totaal</span><span class="mono" data-sim-total="${h.id}"></span></div>
+        <div class="sim-row"><span>Nieuwe inzet</span><span class="mono" data-sim-invested="${h.id}"></span></div>
+        <div class="sim-row highlight"><span>Nieuwe gem. instap</span><span class="mono" data-sim-avg="${h.id}"></span></div>
+      </div>
+      <div class="sim-hint" data-sim-hint="${h.id}">Schuif of vul een bedrag in om het effect op je gemiddelde instapprijs te zien.</div>
+    </div>
+    <div class="coin-info" data-info="${h.id}">
+      <p>${h.desc}</p>
+    </div>
+  `;
+  holdingsEl.appendChild(card);
+  cardEls[h.id] = card;
+});
+
+// ticker
+const tickerTrack = document.getElementById("tickerTrack");
+tickerTrack.innerHTML = "";
+[...HOLDINGS, ...HOLDINGS].forEach((h,i)=>{
+  const span = document.createElement("span");
+  span.className = "ticker-item";
+  span.innerHTML = `<span class="sym">${h.symbol}</span><span class="mono" data-ticker-price="${h.id}-${i}"></span><span data-ticker-change="${h.id}-${i}"></span>`;
+  tickerTrack.appendChild(span);
+});
+
+// ---------- expand/collapse holdings ----------
+document.querySelectorAll("[data-toggle]").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    const id = btn.dataset.toggle;
+    document.querySelector(`[data-sim="${id}"]`).classList.toggle("open");
+    document.querySelector(`[data-info="${id}"]`).classList.toggle("open");
+    document.querySelector(`[data-chevron="${id}"]`).classList.toggle("open");
+  });
+});
+
+// ---------- allocation panel toggle ----------
+document.getElementById("allocToggle").addEventListener("click", ()=>{
+  document.getElementById("allocBody").classList.toggle("open");
+  document.getElementById("allocChevron").classList.toggle("open");
+});
+
+// ---------- bubble panel toggle ----------
+document.getElementById("bubbleToggle").addEventListener("click", ()=>{
+  document.getElementById("bubbleBody").classList.toggle("open");
+  document.getElementById("bubbleChevron").classList.toggle("open");
+  setTimeout(renderBubbles, 60);
+});
+
+// ---------- bubble size-mode toggle ----------
+document.querySelectorAll("[data-bubble-mode]").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    bubbleMode = btn.dataset.bubbleMode;
+    document.querySelectorAll("[data-bubble-mode]").forEach(b=>b.classList.toggle("active", b===btn));
+    renderBubbles();
+  });
+});
+
+// ---------- manual price inputs ----------
+HOLDINGS.forEach(h=>{
+  const inp = document.querySelector(`[data-manual="${h.id}"]`);
+  inp.addEventListener("click", e=>e.stopPropagation());
+  inp.addEventListener("input", e=>{
+    manualPrices[h.id] = e.target.value;
+    renderHolding(h);
+    renderSummary();
+  });
+});
+
+// ---------- mode toggle, sliders, amount inputs, price inputs ----------
+HOLDINGS.forEach(h=>{
+  const slider = document.querySelector(`[data-slider="${h.id}"]`);
+  const amountInp = document.querySelector(`[data-amount="${h.id}"]`);
+  const priceInp = document.querySelector(`[data-buy-price="${h.id}"]`);
+  const prefixEl = document.querySelector(`[data-unit-prefix="${h.id}"]`);
+  const suffixEl = document.querySelector(`[data-unit-suffix="${h.id}"]`);
+
+  function applyMode(mode, convert){
+    const oldMode = simState[h.id].mode;
+    const price = effectivePrice(h);
+    if(convert && price){
+      if(oldMode === "euro" && mode === "coins"){
+        simState[h.id].amount = simState[h.id].amount / price;
+      } else if(oldMode === "coins" && mode === "euro"){
+        simState[h.id].amount = simState[h.id].amount * price;
+      }
+    }
+    simState[h.id].mode = mode;
+    const cfg = sliderConfig(h, mode);
+    slider.min = cfg.min; slider.max = cfg.max; slider.step = cfg.step;
+    const clamped = Math.min(Math.max(simState[h.id].amount, cfg.min), cfg.max);
+    simState[h.id].amount = clamped;
+    slider.value = clamped;
+    amountInp.value = round(clamped, mode === "euro" ? 2 : 6);
+    if(mode === "euro"){ prefixEl.textContent = "€"; suffixEl.textContent = ""; }
+    else { prefixEl.textContent = ""; suffixEl.textContent = h.symbol; }
+
+    document.querySelectorAll(`[data-mode-btn][data-coin="${h.id}"]`).forEach(b=>{
+      b.classList.toggle("active", b.dataset.modeBtn === mode);
+    });
+    updateSim(h);
+  }
+
+  document.querySelectorAll(`[data-mode-btn][data-coin="${h.id}"]`).forEach(btn=>{
+    btn.addEventListener("click", ()=> applyMode(btn.dataset.modeBtn, true));
+  });
+
+  slider.addEventListener("input", ()=>{
+    simState[h.id].amount = parseFloat(slider.value) || 0;
+    amountInp.value = round(simState[h.id].amount, simState[h.id].mode === "euro" ? 2 : 6);
+    updateSim(h);
+  });
+  amountInp.addEventListener("input", ()=>{
+    let v = parseFloat(amountInp.value);
+    if(isNaN(v) || v < 0) v = 0;
+    const cfg = sliderConfig(h, simState[h.id].mode);
+    if(v > cfg.max){ slider.max = v; }
+    simState[h.id].amount = v;
+    slider.value = v;
+    updateSim(h);
+  });
+  priceInp.addEventListener("input", ()=>{
+    simState[h.id].price = priceInp.value;
+    updateSim(h);
+  });
+
+  prefixEl.textContent = "€"; suffixEl.textContent = "";
+});
+
+function round(n, dec){
+  const f = Math.pow(10, dec);
+  return Math.round(n*f)/f;
+}
+
+function effectivePrice(h){
+  const info = getPriceInfo(h);
+  const raw = parseFloat(simState[h.id].price);
+  if(!isNaN(raw) && raw > 0) return raw;
+  return info.known ? info.price : null;
+}
+
+function updateSim(h){
+  const state = simState[h.id];
+  const result = document.querySelector(`[data-sim-result="${h.id}"]`);
+  const hint = document.querySelector(`[data-sim-hint="${h.id}"]`);
+  const priceInp = document.querySelector(`[data-buy-price="${h.id}"]`);
+  const price = effectivePrice(h);
+
+  priceInp.placeholder = price ? fmtNum(price, 4) : "vul prijs in";
+
+  if(state.amount <= 0){
+    result.classList.add("hidden");
+    hint.classList.remove("hidden");
+    hint.textContent = "Schuif of vul een bedrag in om het effect op je gemiddelde instapprijs te zien.";
+    return;
+  }
+  if(!price){
+    result.classList.add("hidden");
+    hint.classList.remove("hidden");
+    hint.textContent = "Vul eerst de huidige prijs in (bij 'Huidige prijs' of 'Tegen prijs') om dit te kunnen berekenen.";
+    return;
+  }
+
+  let coinsBought, euros;
+  if(state.mode === "euro"){
+    euros = state.amount;
+    coinsBought = euros / price;
+  } else {
+    coinsBought = state.amount;
+    euros = coinsBought * price;
+  }
+
+  const newAmount = h.amount + coinsBought;
+  const newInvested = h.invested + euros;
+  const newAvg = newInvested / newAmount;
+  const diff = newAvg - h.avgEntry;
+
+  document.querySelector(`[data-sim-coins="${h.id}"]`).textContent = `+${fmtNum(coinsBought)} ${h.symbol}`;
+  document.querySelector(`[data-sim-euros="${h.id}"]`).textContent = fmtEUR(euros);
+  document.querySelector(`[data-sim-total="${h.id}"]`).textContent = `${fmtNum(newAmount)} ${h.symbol}`;
+  document.querySelector(`[data-sim-invested="${h.id}"]`).textContent = fmtEUR(newInvested);
+  document.querySelector(`[data-sim-avg="${h.id}"]`).innerHTML =
+    `${fmtEUR(newAvg)} <small class="${diff<=0?'profit':'loss'}">(${diff<=0?'↓':'↑'} ${fmtEUR(Math.abs(diff))})</small>`;
+
+  result.classList.remove("hidden");
+  hint.classList.add("hidden");
+}
+
+// ---------- rendering ----------
+function valueOf(h){
+  const info = getPriceInfo(h);
+  return info.known ? h.amount*info.price : -Infinity;
+}
+
+function renderHolding(h){
+  const info = getPriceInfo(h);
+  const liveCell = document.querySelector(`[data-live-price="${h.id}"]`);
+  const valueCell = document.querySelector(`[data-value="${h.id}"]`);
+  const plCell = document.querySelector(`[data-pl="${h.id}"]`);
+
+  if(info.known){
+    let html = fmtEUR(info.price);
+    if(changes[h.id] != null){
+      html += `<span class="change ${changes[h.id]>=0?'profit':'loss'}">${fmtPct(changes[h.id])}</span>`;
+    }
+    if(info.source !== "manual"){
+      const isWs = !!wsSource[h.id];
+      html += `<span class="live-dot ${isWs?'ws':''}" title="${isWs ? 'Realtime via Bitvavo' : 'CoinGecko (elke 60s)'}"></span>`;
+    }
+
+    if(prevPrice[h.id] != null && prevPrice[h.id] !== info.price){
+      const cls = info.price > prevPrice[h.id] ? "flash-up" : "flash-down";
+      liveCell.classList.remove("flash-up","flash-down");
+      void liveCell.offsetWidth;
+      liveCell.classList.add(cls);
+      valueCell.classList.remove("flash-up","flash-down");
+      void valueCell.offsetWidth;
+      valueCell.classList.add(cls);
+    }
+    prevPrice[h.id] = info.price;
+
+    liveCell.innerHTML = html;
+
+    const value = h.amount * info.price;
+    const pl = value - h.invested;
+    const plPct = (pl / h.invested) * 100;
+    valueCell.textContent = fmtEUR(value);
+    plCell.className = `figure-value mono ${pl>=0?'profit':'loss'}`;
+    plCell.innerHTML = `${fmtEUR(pl)}<small class="figure-sub">${fmtPct(plPct)}</small>`;
+  } else {
+    liveCell.textContent = "—";
+    valueCell.textContent = "—";
+    plCell.className = "figure-value mono";
+    plCell.textContent = "—";
+  }
+
+  updateSim(h);
+}
+
+function renderSummary(){
+  const totalInvested = HOLDINGS.reduce((s,h)=>s+h.invested,0);
+  const known = HOLDINGS.filter(h=>getPriceInfo(h).known);
+  const unknownCount = HOLDINGS.length - known.length;
+  const knownValue = known.reduce((s,h)=>s + h.amount*getPriceInfo(h).price, 0);
+  const totalValue = knownValue + CASH;
+  const resultaat = totalValue - DEPOSITED;
+  const resultaatPct = DEPOSITED ? (resultaat/DEPOSITED)*100 : 0;
+
+  document.getElementById("statDeposited").textContent = fmtEUR(DEPOSITED);
+  document.getElementById("statInvested").textContent = fmtEUR(totalInvested);
+
+  const statValue = document.getElementById("statValue");
+  const statValueSub = document.getElementById("statValueSub");
+  if(unknownCount === HOLDINGS.length){
+    statValue.textContent = "—";
+    statValueSub.textContent = `incl. ${fmtEUR(CASH)} cash`;
+  } else {
+    statValue.textContent = fmtEUR(totalValue) + (unknownCount ? " *" : "");
+    statValueSub.textContent = `waarvan ${fmtEUR(CASH)} cash`;
+  }
+
+  const plEl = document.getElementById("statPL");
+  const plPctEl = document.getElementById("statPLPct");
+  if(unknownCount === HOLDINGS.length){
+    plEl.textContent = "—"; plEl.className = "stat-value";
+    plPctEl.textContent = ""; plPctEl.className = "stat-sub";
+  } else {
+    plEl.textContent = fmtEUR(resultaat) + (unknownCount ? " *" : "");
+    plEl.className = `stat-value ${resultaat>=0?'profit':'loss'}`;
+    plPctEl.textContent = fmtPct(resultaatPct) + (unknownCount ? " (gedeeltelijk)" : "");
+    plPctEl.className = `stat-sub ${resultaat>=0?'profit':'loss'}`;
+  }
+
+  const partial = document.getElementById("partialNote");
+  if(unknownCount > 0){
+    const names = HOLDINGS.filter(h=>!getPriceInfo(h).known).map(h=>h.symbol).join(", ");
+    partial.innerHTML = `* ${unknownCount} van ${HOLDINGS.length} coins (${names}) hebben nog geen prijs. "Totale waarde" en "resultaat" zijn berekend zonder deze coins — vul hun prijs handmatig in voor het volledige beeld.`;
+    partial.classList.add("show");
+  } else {
+    partial.classList.remove("show");
+  }
+
+  renderAllocation();
+  renderBubbles();
+  renderHero(totalValue, unknownCount);
+  sortHoldings();
+}
+
+// ---------- live hero overview ----------
+let sessionHistory = [];
+const HERO_MIN_GAP_MS = 8000;
+
+function pushSessionPoint(totalValue){
+  const now = Date.now();
+  if(sessionHistory.length && now - sessionHistory[sessionHistory.length-1].t < HERO_MIN_GAP_MS) return;
+  sessionHistory.push({ t: now, v: totalValue });
+  if(sessionHistory.length > 300) sessionHistory.shift();
+}
+
+function renderHeroSparkline(){
+  const wrap = document.getElementById("heroSparkWrap");
+  if(!wrap) return;
+  if(sessionHistory.length < 2){ wrap.innerHTML = ""; return; }
+  const values = sessionHistory.map(p=>p.v);
+  const min = Math.min(...values), max = Math.max(...values);
+  const w = 160, h = 56, pad = 4;
+  const range = (max-min) || 1;
+  const pts = sessionHistory.map((p,i)=>{
+    const x = pad + (i/(sessionHistory.length-1))*(w-2*pad);
+    const y = h-pad - ((p.v-min)/range)*(h-2*pad);
+    return [x,y];
+  });
+  const line = pts.map((p,i)=>`${i===0?"M":"L"}${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(" ");
+  const area = line + ` L${pts[pts.length-1][0].toFixed(1)},${h-pad} L${pts[0][0].toFixed(1)},${h-pad} Z`;
+  const lastUp = sessionHistory[sessionHistory.length-1].v >= sessionHistory[0].v;
+  const stroke = lastUp ? "var(--profit)" : "var(--loss)";
+  const fill = lastUp ? "rgba(111,191,142,0.14)" : "rgba(226,121,110,0.14)";
+  wrap.innerHTML = `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+    <path d="${area}" fill="${fill}" stroke="none"/>
+    <path d="${line}" fill="none" stroke="${stroke}" stroke-width="2"/>
+  </svg>`;
+}
+
+function renderHero(totalValue, unknownCount){
+  const valueEl = document.getElementById("heroValue");
+  const subEl = document.getElementById("heroSub");
+  const moversEl = document.getElementById("heroMovers");
+  if(!valueEl) return;
+
+  if(unknownCount === HOLDINGS.length){
+    valueEl.textContent = "—";
+    subEl.textContent = "Vul prijzen in om je live waarde te zien.";
+    moversEl.innerHTML = "";
+    document.getElementById("heroSparkWrap").innerHTML = "";
+    return;
+  }
+
+  valueEl.textContent = fmtEUR(totalValue) + (unknownCount ? " *" : "");
+
+  if(unknownCount === 0) pushSessionPoint(totalValue);
+
+  if(sessionHistory.length >= 2){
+    const first = sessionHistory[0].v;
+    const diff = totalValue - first;
+    const pct = first ? (diff/first)*100 : 0;
+    subEl.innerHTML = `<span class="${diff>=0?'profit':'loss'}">${diff>=0?'+':''}${fmtEUR(diff)} (${fmtPct(pct)})</span> deze sessie`;
+  } else {
+    subEl.textContent = "Eerste meting van deze sessie";
+  }
+  renderHeroSparkline();
+
+  const withChange = HOLDINGS.filter(h=>changes[h.id] != null);
+  if(withChange.length){
+    const top = [...withChange].sort((a,b)=>changes[b.id]-changes[a.id])[0];
+    const bottom = [...withChange].sort((a,b)=>changes[a.id]-changes[b.id])[0];
+    moversEl.innerHTML = `
+      <div class="hero-mover up"><span class="hero-mover-label">Stijger 24u</span><span class="hero-mover-val">${top.symbol} ${fmtPct(changes[top.id])}</span></div>
+      <div class="hero-mover down"><span class="hero-mover-label">Daler 24u</span><span class="hero-mover-val">${bottom.symbol} ${fmtPct(changes[bottom.id])}</span></div>
+    `;
+  } else {
+    moversEl.innerHTML = "";
+  }
+}
+
+// ---------- crypto bubbles ----------
+let bubbleMode = "share";   // "share" = aandeel/waarde · "move" = 24u-beweging
+const bubbleEls = {};
+const bubblePhys = {};
+let bubbleRAF = null;
+let bubbleFieldEl = null;
+
+function bubbleData(){
+  const arr = HOLDINGS.filter(h=>getPriceInfo(h).known).map(h=>{
+    const price = getPriceInfo(h).price;
+    return { id:h.id, h, price, value:h.amount*price, change:changes[h.id] };
+  });
+  const total = arr.reduce((s,d)=>s+d.value,0) || 1;
+  arr.forEach(d=> d.pct = d.value/total*100);
+  arr.sort((a,b)=>b.value-a.value);
+  return arr;
+}
+
+// colour with intensity that grows with the size of the 24h move (pale = small, neon = big)
+function bubbleSentiment(change){
+  if(change == null) return { rgb:"143,163,154", up:null, t:0 };
+  const up = change >= 0;
+  const t = Math.min(1, Math.abs(change)/12);   // saturates around a 12% move
+  return { rgb: up ? "61,220,151" : "242,84,78", up, t };
+}
+
+function renderBubbles(){
+  bubbleFieldEl = bubbleFieldEl || document.getElementById("bubbleField");
+  const field = bubbleFieldEl;
+  if(!field) return;
+  const data = bubbleData();
+
+  if(!data.length){
+    Object.keys(bubbleEls).forEach(id=>{ bubbleEls[id].remove(); delete bubbleEls[id]; delete bubblePhys[id]; });
+    if(!field.querySelector(".bubble-empty"))
+      field.innerHTML = `<div class="bubble-empty">Wachten op live prijzen van Bitvavo…</div>`;
+    return;
+  }
+  const ph = field.querySelector(".bubble-empty"); if(ph) ph.remove();
+
+  const W = field.clientWidth || 600;
+  const H = field.clientHeight || 480;
+  if(W < 5 || H < 5) return; // panel collapsed / not laid out yet
+
+  // size metric depends on the mode: share -> position value; move -> magnitude of the 24h move
+  const metricOf = d => bubbleMode === "share" ? d.value : Math.max(Math.abs(d.change ?? 0), 0.3);
+  const maxMetric = Math.max(...data.map(metricOf)) || 1;
+  const maxR = Math.min(W, H) * 0.30;
+  const minR = Math.max(22, Math.min(W, H) * 0.065);
+  const k = maxR / Math.sqrt(maxMetric);
+
+  const liveIds = new Set(data.map(d=>d.id));
+  Object.keys(bubbleEls).forEach(id=>{
+    if(!liveIds.has(id)){ bubbleEls[id].remove(); delete bubbleEls[id]; delete bubblePhys[id]; }
+  });
+
+  data.forEach(d=>{
+    const tr = Math.min(maxR, Math.max(minR, k*Math.sqrt(metricOf(d))));
+    let el = bubbleEls[d.id];
+    if(!el){
+      el = document.createElement("div");
+      el.className = "bubble";
+      field.appendChild(el);
+      bubbleEls[d.id] = el;
+      bubblePhys[d.id] = {
+        x: W*0.25 + Math.random()*W*0.5,
+        y: H*0.25 + Math.random()*H*0.5,
+        vx: (Math.random()-0.5)*0.6,
+        vy: (Math.random()-0.5)*0.6,
+        r: tr, tr
+      };
+    }
+    bubblePhys[d.id].tr = tr;
+
+    // glossy glass look: white highlight top-left + sentiment body + outer glow that scales with intensity
+    const s = bubbleSentiment(d.change);
+    const a1 = (0.34 + 0.40*s.t).toFixed(2);
+    const a2 = (0.05 + 0.10*s.t).toFixed(2);
+    el.style.background = `radial-gradient(circle at 32% 26%, rgba(255,255,255,0.32), rgba(255,255,255,0.06) 14%, rgba(${s.rgb},${a1}) 42%, rgba(${s.rgb},${a2}) 100%)`;
+    el.style.boxShadow = `0 6px 20px rgba(0,0,0,0.34), 0 0 ${(10+26*s.t).toFixed(0)}px rgba(${s.rgb},${(0.12+0.34*s.t).toFixed(2)}), inset 0 3px 12px rgba(255,255,255,0.22)`;
+    el.style.border = `1px solid rgba(${s.rgb},${(0.30+0.42*s.t).toFixed(2)})`;
+    el.style.color = s.up === null ? "var(--text)" : (s.up ? "#eafff5" : "#fff1f0");
+
+    const pctTxt = `${d.pct.toFixed(1).replace(".",",")}%`;
+    const chgTxt = d.change == null ? "—" : fmtPct(d.change);
+    const big = bubbleMode === "share" ? pctTxt : chgTxt;   // headline = the mode's metric
+    const small = bubbleMode === "share" ? chgTxt : pctTxt; // secondary line
+    el.title = `${d.h.symbol} · ${d.h.name}\nKoers ${fmtEUR(d.price)}\n24u ${chgTxt}\nWaarde ${fmtEUR(d.value)} (${pctTxt} van portefeuille)`;
+
+    const r = bubblePhys[d.id].r;
+    const symF = Math.max(9, Math.min(22, r*0.40));
+    const bigF = Math.max(8, Math.min(17, r*0.30));
+    const smF  = Math.max(7, Math.min(12, r*0.20));
+    const showBig = r > 24;
+    const showSmall = r > 36;
+    el.innerHTML =
+      `<span class="b-sym" style="font-size:${symF.toFixed(1)}px">${d.h.symbol}</span>` +
+      (showBig ? `<span class="b-chg" style="font-size:${bigF.toFixed(1)}px">${big}</span>` : ``) +
+      (showSmall ? `<span class="b-sub" style="font-size:${smF.toFixed(1)}px">${small}</span>` : ``);
+  });
+
+  if(!bubbleRAF) bubbleStep();
+}
+
+function bubbleStep(){
+  const field = bubbleFieldEl;
+  if(!field){ bubbleRAF = null; return; }
+  const W = field.clientWidth, H = field.clientHeight;
+  const ids = Object.keys(bubblePhys);
+  if(!W || !H || !ids.length){ bubbleRAF = requestAnimationFrame(bubbleStep); return; }
+
+  // ease each radius toward its target
+  ids.forEach(id=>{ const p=bubblePhys[id]; p.r += (p.tr - p.r)*0.12; });
+
+  // gentle pull toward the centre + a touch of wander so the cluster keeps drifting
+  const cx = W/2, cy = H/2;
+  ids.forEach(id=>{
+    const p = bubblePhys[id];
+    p.vx += (cx - p.x)*0.0008 + (Math.random()-0.5)*0.05;
+    p.vy += (cy - p.y)*0.0008 + (Math.random()-0.5)*0.05;
+  });
+
+  // collision resolution so bubbles never overlap
+  for(let i=0;i<ids.length;i++){
+    for(let j=i+1;j<ids.length;j++){
+      const a=bubblePhys[ids[i]], b=bubblePhys[ids[j]];
+      const dx=b.x-a.x, dy=b.y-a.y;
+      const dist=Math.hypot(dx,dy)||0.001;
+      const minD=a.r+b.r+2;
+      if(dist<minD){
+        const overlap=(minD-dist)/2;
+        const nx=dx/dist, ny=dy/dist;
+        a.x-=nx*overlap; a.y-=ny*overlap;
+        b.x+=nx*overlap; b.y+=ny*overlap;
+        const rel=(b.vx-a.vx)*nx+(b.vy-a.vy)*ny;
+        if(rel<0){
+          a.vx+=nx*rel*0.5; a.vy+=ny*rel*0.5;
+          b.vx-=nx*rel*0.5; b.vy-=ny*rel*0.5;
+        }
+      }
+    }
+  }
+
+  // integrate + bounce off the walls
+  ids.forEach(id=>{
+    const p=bubblePhys[id];
+    p.vx*=0.90; p.vy*=0.90;
+    p.vx=Math.max(-6,Math.min(6,p.vx));
+    p.vy=Math.max(-6,Math.min(6,p.vy));
+    p.x+=p.vx; p.y+=p.vy;
+    if(p.x<p.r){ p.x=p.r; p.vx=Math.abs(p.vx)*0.5; }
+    if(p.x>W-p.r){ p.x=W-p.r; p.vx=-Math.abs(p.vx)*0.5; }
+    if(p.y<p.r){ p.y=p.r; p.vy=Math.abs(p.vy)*0.5; }
+    if(p.y>H-p.r){ p.y=H-p.r; p.vy=-Math.abs(p.vy)*0.5; }
+    const el=bubbleEls[id];
+    if(el){
+      const s=Math.round(p.r*2);
+      el.style.width=s+"px"; el.style.height=s+"px";
+      el.style.transform=`translate(${(p.x-p.r).toFixed(1)}px, ${(p.y-p.r).toFixed(1)}px)`;
+    }
+  });
+
+  bubbleRAF = requestAnimationFrame(bubbleStep);
+}
+
+document.addEventListener("visibilitychange", ()=>{
+  if(document.hidden){
+    if(bubbleRAF){ cancelAnimationFrame(bubbleRAF); bubbleRAF = null; }
+  } else if(!bubbleRAF && Object.keys(bubblePhys).length){
+    bubbleStep();
+  }
+});
+
+let bubbleResizeTimer = null;
+window.addEventListener("resize", ()=>{
+  clearTimeout(bubbleResizeTimer);
+  bubbleResizeTimer = setTimeout(renderBubbles, 200);
+});
+
+// ---------- sort holdings (live, follows dropdown) ----------
+let lastSortKey = "";
+function plOf(h){
+  const info = getPriceInfo(h);
+  if(!info.known) return -Infinity;
+  return h.amount*info.price - h.invested;
+}
+function sortHoldings(){
+  const mode = document.getElementById("sortSelect").value;
+  let arr = [...HOLDINGS];
+  switch(mode){
+    case "value-desc":  arr.sort((a,b)=>valueOf(b)-valueOf(a)); break;
+    case "value-asc":   arr.sort((a,b)=>valueOf(a)-valueOf(b)); break;
+    case "change-desc": arr.sort((a,b)=>(changes[b.id] ?? -Infinity)-(changes[a.id] ?? -Infinity)); break;
+    case "change-asc":  arr.sort((a,b)=>(changes[a.id] ??  Infinity)-(changes[b.id] ??  Infinity)); break;
+    case "pl-desc":     arr.sort((a,b)=>plOf(b)-plOf(a)); break;
+    case "pl-asc":      arr.sort((a,b)=>plOf(a)-plOf(b)); break;
+    default:            arr.sort((a,b)=>valueOf(b)-valueOf(a)); break;
+  }
+  const key = mode + ":" + arr.map(h=>h.id).join(",");
+  if(key === lastSortKey) return;
+  lastSortKey = key;
+  arr.forEach(h => holdingsEl.appendChild(cardEls[h.id]));
+}
+document.getElementById("sortSelect").addEventListener("change", sortHoldings);
+
+// ---------- portfolio allocation donut ----------
+const ALLOC_COLORS = ["#e0b25a","#6fbf8e","#7aa2f7","#e2796e","#c792ea","#73d0ff","#f6c177","#9ece6a"];
+
+function renderAllocation(){
+  const wrap = document.getElementById("allocWrap");
+  if(!wrap) return;
+  const items = [];
+  HOLDINGS.forEach(h=>{
+    const info = getPriceInfo(h);
+    if(info.known) items.push({ label: h.symbol, value: h.amount*info.price });
+  });
+  items.push({ label:"Cash (EUR)", value: CASH });
+  const total = items.reduce((s,i)=>s+i.value,0);
+  if(total <= 0){
+    wrap.innerHTML = `<p class="empty-msg">Nog geen prijzen bekend om de verdeling te tonen.</p>`;
+    return;
+  }
+  const r = 60, cx = 70, cy = 70, circumference = 2*Math.PI*r;
+  let offset = 0;
+  let circles = "";
+  items.forEach((it,i)=>{
+    const frac = it.value/total;
+    const len = frac*circumference;
+    const color = ALLOC_COLORS[i % ALLOC_COLORS.length];
+    circles += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${color}" stroke-width="20" stroke-dasharray="${len.toFixed(2)} ${(circumference-len).toFixed(2)}" stroke-dashoffset="${(-offset).toFixed(2)}" transform="rotate(-90 ${cx} ${cy})"/>`;
+    offset += len;
+  });
+  const svg = `<svg class="alloc-chart" width="140" height="140" viewBox="0 0 140 140">${circles}</svg>`;
+  const legend = items.map((it,i)=>{
+    const pct = it.value/total*100;
+    const color = ALLOC_COLORS[i % ALLOC_COLORS.length];
+    return `<div class="alloc-item"><span class="alloc-name"><span class="swatch" style="background:${color}"></span>${it.label}</span><span class="alloc-pct">${pct.toFixed(1).replace(".",",")}% · ${fmtEUR(it.value)}</span></div>`;
+  }).join("");
+  wrap.innerHTML = svg + `<div class="alloc-legend">${legend}</div>`;
+}
+
+function renderTicker(){
+  const wrap = document.getElementById("tickerWrap");
+  if(!liveOk){ wrap.style.display = "none"; return; }
+  wrap.style.display = "block";
+  [...HOLDINGS, ...HOLDINGS].forEach((h,i)=>{
+    const info = getPriceInfo(h);
+    document.querySelector(`[data-ticker-price="${h.id}-${i}"]`).textContent = fmtEUR(info.price);
+    const chEl = document.querySelector(`[data-ticker-change="${h.id}-${i}"]`);
+    if(changes[h.id] != null){
+      chEl.textContent = fmtPct(changes[h.id]);
+      chEl.className = changes[h.id]>=0 ? "profit" : "loss";
+    }
+  });
+}
+
+function renderAll(){
+  document.body.classList.toggle("live-off", liveOk === false);
+  HOLDINGS.forEach(renderHolding);
+  renderSummary();
+  renderTicker();
+  sortHoldings();
+}
+
+// ---------- Bitvavo realtime connection ----------
+function updateWsStatus(){
+  const n = HOLDINGS.filter(h=>wsSource[h.id]).length;
+  const el = document.getElementById("wsStatus");
+  if(n === 0){
+    el.textContent = "Bitvavo realtime: verbinden…";
+  } else {
+    el.textContent = `Bitvavo realtime: ${n}/${HOLDINGS.length} coins live`;
+  }
+}
+
+function throttledRender(h){
+  const now = Date.now();
+  if(lastRender[h.id] && now - lastRender[h.id] < 400) return;
+  lastRender[h.id] = now;
+  renderHolding(h);
+  renderSummary();
+  updateWsStatus();
+}
+
+let lastSummaryRender = 0;
+function throttledSummary(){
+  const now = Date.now();
+  if(now - lastSummaryRender < 350) return;
+  lastSummaryRender = now;
+  renderSummary();
+}
+
+let bvSocket = null;
+let bvReconnectAttempts = 0;
+
+function connectBitvavo(){
+  bvSocket = new WebSocket("wss://ws.bitvavo.com/v2/");
+
+  bvSocket.onopen = ()=>{
+    bvReconnectAttempts = 0;
+    bvSocket.send(JSON.stringify({
+      action: "subscribe",
+      channels: [{ name: "ticker24h", markets: Object.values(BITVAVO_MARKETS) }]
+    }));
+  };
+
+  bvSocket.onmessage = (ev)=>{
+    let msg;
+    try{ msg = JSON.parse(ev.data); } catch(e){ return; }
+    if(msg.event !== "ticker24h") return;
+    const list = Array.isArray(msg.data) ? msg.data : [msg.data];
+    let touched = false;
+    list.forEach(t=>{
+      if(!t || !t.market) return;
+      const id = MARKET_TO_ID[t.market];
+      if(!id) return;
+      const last = parseFloat(t.last ?? t.bid ?? t.ask);
+      const open = parseFloat(t.open);
+      if(isNaN(last)) return;
+      wsPrices[id] = last;
+      wsSource[id] = true;
+      if(!isNaN(open) && open > 0) changes[id] = (last - open) / open * 100;  // 24h % straight from Bitvavo
+      touched = true;
+    });
+    if(!touched) return;
+    liveOk = true;
+    notice.classList.remove("show");
+    document.body.classList.remove("live-off");
+    updatedAt.textContent = "bijgewerkt " + new Date().toLocaleTimeString("nl-NL");
+    HOLDINGS.forEach(h=>{ if(wsSource[h.id]) renderHolding(h); });
+    throttledSummary();
+    updateWsStatus();
+  };
+
+  bvSocket.onerror = ()=>{};
+
+  bvSocket.onclose = ()=>{
+    HOLDINGS.forEach(h=>{ wsSource[h.id] = false; delete wsPrices[h.id]; });
+    updateWsStatus();
+    renderAll();
+    bvReconnectAttempts++;
+    const delay = Math.min(30000, 3000 * bvReconnectAttempts);
+    setTimeout(connectBitvavo, delay);
+  };
+}
+
+// ---------- live price fetching ----------
+const refreshBtn = document.getElementById("refreshBtn");
+const refreshLabel = document.getElementById("refreshLabel");
+const notice = document.getElementById("notice");
+const updatedAt = document.getElementById("updatedAt");
+
+async function fetchPrices(){
+  refreshBtn.classList.add("spin");
+  refreshLabel.textContent = "Bijwerken…";
+  try{
+    const ids = HOLDINGS.map(h=>h.id).join(",");
+    const res = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=eur&include_24hr_change=true`);
+    if(!res.ok) throw new Error("bad response: " + res.status);
+    const data = await res.json();
+    let any = false;
+    HOLDINGS.forEach(h=>{
+      if(data[h.id] && data[h.id].eur != null){
+        prices[h.id] = data[h.id].eur;
+        changes[h.id] = data[h.id].eur_24h_change;
+        any = true;
+      }
+    });
+    if(!any) throw new Error("empty response");
+    liveOk = true;
+    notice.classList.remove("show");
+    updatedAt.textContent = "bijgewerkt " + new Date().toLocaleTimeString("nl-NL");
+  } catch(e){
+    const bitvavoLive = HOLDINGS.some(h=>wsSource[h.id]);
+    if(!bitvavoLive){
+      liveOk = false;
+      notice.innerHTML = `<strong>Live prijzen tijdelijk niet beschikbaar</strong> — zowel de Bitvavo-realtimeverbinding als de reservebron (CoinGecko) reageren even niet (${e.message}). De pagina probeert het automatisch opnieuw. Je kunt ondertussen bij elke coin handmatig een prijs invullen.`;
+      notice.classList.add("show");
+    }
+  } finally {
+    refreshBtn.classList.remove("spin");
+    refreshLabel.textContent = "Live prijzen";
+    renderAll();
+  }
+}
+
+refreshBtn.addEventListener("click", fetchPrices);
+
+// initial load + Bitvavo realtime + CoinGecko fallback every 60s
+fetchPrices();
+renderAll();
+renderBubbles();
+updateWsStatus();
+connectBitvavo();
+setInterval(fetchPrices, 60000);
+</script>
+
+
+</body></html>
